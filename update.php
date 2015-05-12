@@ -14,7 +14,9 @@ define('OAUTH_CALLBACK', "http://v21.io/traceryhosting/");
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 
 
-$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8', 'tracery_php', DB_PASSWORD);
+$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8', 'tracery_php', DB_PASSWORD, array(
+    PDO::MYSQL_ATTR_FOUND_ROWS => true
+));
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -36,23 +38,26 @@ if (isset($_SESSION['oauth_token']))
 
 	  	if ($stmt->rowCount() == 1)
 	  	{
-			die ("{result: \"success\"}");
+			die ("{\"success\": true}");
 	  	}
 	  	else
 	  	{
-			die ("{result: \"failure\"}");
+			die ("{\"success\": false, \"reason\" : \"row count mismatch\"}");
 	  	}
 
 	}
 	catch(PDOException $e)
 	{
-		die($e); //todo clean this
+		
+
+		die ("{\"success\": false, \"reason\" : \"" . $e . "\"}");
+		//die($e); //todo clean this
 	}
 
 }
 else
 {
-	die ("{result: \"failure\"}");
+	die ("{\"success\": false, \"reason\" : \"oauth failure\"}");
 }
 
 

@@ -41,6 +41,10 @@ $access_token = $connection->oauth("oauth/access_token", array("oauth_verifier" 
 
 $_SESSION['oauth_token'] = $access_token["oauth_token"]; //this should be this already?
 
+$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
+$user_data = $connection->get("users/show", array("screen_name" => $access_token["screen_name"]));
+
+$_SESSION['profile_pic'] = $user_data->profile_image_url; 
 
 header('Location: http://v21.io/traceryhosting');
 die();

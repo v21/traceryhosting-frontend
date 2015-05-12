@@ -1,0 +1,52 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+.cursive
+{
+
+font-family: 'Yesteryear', cursive;
+}
+
+
+
+
+.username
+{
+padding: 15px;
+}
+.username:hover
+{
+    text-decoration: none;
+}
+
+
+.username-text
+{
+    font-weight: bold;
+  margin-left:10px;
+  font-size: 18px;
+line-height: 20px;
+
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.size32 {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+
+.btn-tweet
+{
+    color: #fff;
+    background-color: #55ACEE;
+    min-width: 50px;
+}
+
+

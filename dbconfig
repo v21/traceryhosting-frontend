@@ -1,0 +1,9 @@
+db : traceryhosting
+
+CREATE TABLE traceries (
+    token VARCHAR(64) NOT NULL ,
+    token_secret VARCHAR(64),
+    screen_name VARCHAR(15),
+    frequency INT(12),
+    tracery TEXT,
+    primary KEY (token));
