@@ -7,17 +7,17 @@ require "credentials.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 
-define('OAUTH_CALLBACK', "http://v21.io/traceryhosting/");
 
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 
 
-$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8', 'tracery_php', DB_PASSWORD);
+$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD);
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
+session_set_cookie_params(86400);
 session_start();
 
 if (!isset($_SESSION['oauth_token']))
@@ -55,18 +55,56 @@ if (!isset($_SESSION['oauth_token']))
 
     <div class="container-fluid">
 
-        <h1 class=" text-center cursive">Cheap Bots, Done Quick!</h1>
+        <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
         <br><br>
         <div class="row">
-		  <div class="col-md-6 col-md-offset-3">Short explanation of what the site is and why you might care</div>
+		  <div class="col-md-6 col-md-offset-3">
+		  <p>This site will help you make a Twitterbot! They're easy to make and free to run.
+		  </p>
+
+		  <p>To use it, <a href="https://twitter.com/signup">create a Twitter account</a> for your bot to run under and then sign in below. 
+		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="http://v21.io">George Buckenham</a> - he can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>.</p>
+		  </p>
+		  </div>
 		</div>
 		
         <br><br>
 		<div class="row">
 		  <div class="center-block">
-			<a href="http://v21.io/traceryhosting/signin.php"><img src="img/sign-in-with-twitter-gray.png" class="center-block"></a>
+			<a href="signin.php"><img src="img/sign-in-with-twitter-gray.png" class="center-block"></a>
 		  </div>
 		</div>
+
+        <br><br>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3">
+          Some examples of twitterbots made with this site:
+          <ul id="shuffle">
+          <li><a href="https://twitter.com/ItsMrTree">@ItsMrTree</a></li>
+          <li><a href="https://twitter.com/gnuerror">@gnuerror</a></li>
+          <li><a href="https://twitter.com/memorypoem">@memorypoem</a></li>
+          <li><a href="https://twitter.com/unicode_garden">@unicode_garden</a></li>
+          <li><a href="https://twitter.com/infinitedeserts">@infinitedeserts</a></li>
+          <li><a href="https://twitter.com/FoleyArtists">@FoleyArtists</a></li>
+          <li><a href="https://twitter.com/What_Hastings">@What_Hastings</a></li>
+          <li><a href="https://twitter.com/weirdLittleMen">@weirdLittleMen</a></li>
+          <li><a href="https://twitter.com/petitsmotifs">@petitsmotifs</a></li>
+          <li><a href="https://twitter.com/l__l_l__l_l___l">@l__l_l__l_l___l</a></li>
+          <li><a href="https://twitter.com/flowerscatalog">@flowerscatalog</a></li>
+          <li><a href="https://twitter.com/AbhorrentSexBot">@AbhorrentSexBot</a></li>
+          <li><a href="https://twitter.com/emojitoemoji">@emojitoemoji</a></li>
+          <li><a href="https://twitter.com/legitvgcheats">@legitvgcheats</a></li>
+          
+          </ul>
+
+<script type="text/javascript">
+var ul = document.getElementById("shuffle");
+for (var i = ul.children.length; i >= 0; i--) {
+    ul.appendChild(ul.children[Math.random() * i | 0]);
+}
+</script> 
+          </div>
+        </div>
 
 
 <!--
@@ -132,33 +170,63 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <div class="container-fluid">
 
-        <h1 class=" text-center cursive">Cheap Bots, Done Quick!</h1>
-
+    <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
+        <br>
+        <div class="row">
+		  <div class="col-md-6 col-md-offset-3">
+          <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>.</p>
+          <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="http://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
+		  <ul>
+		  <li><a href="http://www.crystalcodepalace.com/traceryTut.html">Tracery tutorial</a></li>
+		  <li><a href="http://www.brightspiral.com/tracery/">Tracery visual editor</a></li>
+		  <li><a href="https://github.com/v21/tracerybot">Example of a self-hosted bot running on Tracery</a></li>
+		  </ul>
+		  <p>
+		  </div>
+		</div>
+		
+        <br><br>
     <form id="tracery-form">
 
     <div class="form-group">
         <label for="tracery">Tracery JSON</label><br>
-        <textarea class="form-control expanding" rows="25" id="tracery" name="tracery"><?php echo($result['tracery']) /*todo : XSS vuln? */ ?></textarea>
+        <textarea class="form-control expanding" rows="25" id="tracery" name="tracery">
+<?php 
+        if (is_null($result['tracery']))
+        {
+        	echo('{
+	"origin": ["this could be a tweet", "this is #alternatives# tweet", "#completely different#"],
+	"alternatives" : ["an example", "a different", "another", "a possible", "a generated", "your next"],
+	"completely different" : ["and now for something completely different", "so long and thanks for all the fish", "or, maybe, #alternatives# badger"]
+}
+');
+        }
+        else
+        {
+        	echo($result['tracery']); /*todo : XSS vuln? */
+        }
+?>
+
+</textarea>
     </div>
 <div id="tracery-validator" class="alert alert-danger hidden" role="alert">Parsing error</div>
 
     <div class="row">
-	  <div class="col-xs-10">
-	  	<div id="generated-tweet" class="well well-sm">-----</div>
-	  </div>
-	  <div class="col-xs-1">
-		<button type="button" id="refresh-generated-tweet" class="btn btn-default btn-block"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
-	  </div>
-	  <div class="col-xs-1">
-		<button type="button" class="btn btn-tweet btn-block">Tweet</button>
-	  </div>
+    <div class="col-md-12">
+    	<div class="pull-right pad-left">
+		<button type="button" id="refresh-generated-tweet" class="btn btn-default"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+	 	<button type="button" id="tweet-generated-tweet" class="btn btn-tweet">Tweet</button>
+		</div>
+	  	<div id="generated-tweet" style="overflow: auto;" class="well well-sm">-----</div>
+	  	
+	 </div>
 	</div>
 <div class="form-inline">
     <div class="form-group">
         <label for="frequency">Send a tweet </label>
 	    <select class="form-control" id="frequency" name="frequency">
 	    	<?php 
-	    		$frequencypossibilities = array(-1 => "Never", 10 => "Every 10 Minutes");
+	    		$frequencypossibilities = array(-1 => "Never", 10 => "Every 10 minutes", 30 => "Every half hour", 60 => "Every hour", 180 => "Every 3 hours", 360 => "Every 6 hours", 720 => "Twice a day", 1440 => "Once a day", 10080 => "Once a week", 43829 => "Once a month", 525949 => "Once a year");
 	    		foreach ($frequencypossibilities as $freqvalue => $freqlabel) {
 	    			echo('<option value="' . $freqvalue . '" '. ($result['frequency'] == $freqvalue ? 'selected' : '') .'>' . $freqlabel . '</option>');
 	    		}
@@ -172,7 +240,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	        <span class="username-text"><?php echo($result['screen_name']) ?></span>
 	        </a>
         </div>
-        <a class="btn  btn-warning logout" href="logout.php"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Log Out</a>
+        <a class="btn  btn-default logout" href="logout.php"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Log Out</a>
     <div class="button form-group pull-right">
     
         <button id="save-button" class="btn btn-default">Save</button>
@@ -185,25 +253,6 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	        
 
 
-      <!-- Example row of columns -->
-      <!--
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-      </div>-->
 <!--
       <hr>
 
@@ -216,8 +265,12 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <script src="js/vendor/bootstrap.min.js"></script>
 
         <script src="js/tracery.min.js"></script>
+        <script src="js/twitter-text-1.9.4.min.js"></script>
         <script src="js/expanding.js"></script>
+        <script src="js/json2.js"></script>
+        <script src="js/jsonlint.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/underscore-min.js"></script>
     </body>
 </html>
 

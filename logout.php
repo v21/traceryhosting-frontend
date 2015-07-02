@@ -56,7 +56,7 @@ session_destroy();
 <div class="alert alert-info" role="alert">Successfully logged out</div>
 
         <br><br>
-        <h1 class=" text-center cursive">Cheap Bots, Done Quick!</h1>
+        <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
         <br><br>
 
         
@@ -64,7 +64,7 @@ session_destroy();
         <br><br>
 		<div class="row">
 		  <div class="center-block">
-			<a href="http://v21.io/traceryhosting/signin.php"><img src="img/sign-in-with-twitter-gray.png" class="center-block"></a>
+			<a href="signin.php"><img src="img/sign-in-with-twitter-gray.png" class="center-block"></a>
 		  </div>
 		</div>
 

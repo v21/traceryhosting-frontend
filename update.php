@@ -9,12 +9,11 @@ require "credentials.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 
-define('OAUTH_CALLBACK', "http://v21.io/traceryhosting/");
 
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 
 
-$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8', 'tracery_php', DB_PASSWORD, array(
+$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD, array(
     PDO::MYSQL_ATTR_FOUND_ROWS => true
 ));
 
@@ -22,6 +21,7 @@ $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
+session_set_cookie_params(86400);
 session_start();
 
 if (isset($_SESSION['oauth_token']))
@@ -30,14 +30,13 @@ if (isset($_SESSION['oauth_token']))
 	{
 		//todo validate json here
 
-
-
 		$stmt = $pdo->prepare('UPDATE traceries SET frequency=:frequency, tracery=:tracery WHERE token=:token');
 
 	  	$stmt->execute(array('frequency' => $_POST['frequency'], 'tracery' => $_POST['tracery'], 'token' => $_SESSION['oauth_token']));
 
 	  	if ($stmt->rowCount() == 1)
 	  	{
+	  		mail("vtwentyone+php@gmail.com", "Bot update : " . $_SESSION['screen_name'] . " every " . $_POST['frequency'] . " minutes", $_POST['tracery']);
 			die ("{\"success\": true}");
 	  	}
 	  	else
@@ -49,15 +48,15 @@ if (isset($_SESSION['oauth_token']))
 	catch(PDOException $e)
 	{
 		
-
-		die ("{\"success\": false, \"reason\" : \"" . $e . "\"}");
+		error_log($e);
+		die ("{\"success\": false, \"reason\" : \"db err " . $e->getCode() . "\"}");
 		//die($e); //todo clean this
 	}
 
 }
 else
 {
-	die ("{\"success\": false, \"reason\" : \"oauth failure\"}");
+	die ("{\"success\": false, \"reason\" : \"Not signed in\"}");
 }
 
 

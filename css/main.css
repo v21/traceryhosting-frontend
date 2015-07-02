@@ -4,11 +4,15 @@
    Author's custom styles
    ========================================================================== */
 
-
+body, html
+{
+    background-color: #fff8f4;
+}
 .cursive
 {
 
 font-family: 'Yesteryear', cursive;
+color:#ff6600;
 }
 
 
@@ -49,4 +53,20 @@ line-height: 20px;
     min-width: 50px;
 }
 
+.pad-left
+{
+    margin-left: 5px;
+    margin-top: 2.5px;
+}
 
+.header
+{
+    margin-top:40px;
+    font-size:5em;
+}
+
+.too-long
+{
+    color: #FF4136;
+    background-color: #E2E2E2;
+}

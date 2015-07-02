@@ -8,24 +8,52 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 
 
-$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8', 'tracery_php', DB_PASSWORD);
+$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD);
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
+session_set_cookie_params(86400);
 session_start();
+
+function login_failure()
+{
+  $_SESSION = array();
+
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+
+    session_destroy();
+    die('Error! Couldn\'t log in. <a href="http://cheapbotsdonequick.com">Retry</a>');
+}
+
 
 $request_token = array();
 $request_token['oauth_token'] = $_SESSION['oauth_token'];
 $request_token['oauth_token_secret'] = $_SESSION['oauth_token_secret'];
 
-if (isset($_REQUEST['oauth_token']) && $request_token['oauth_token'] !== $_REQUEST['oauth_token']) {
+if ((isset($_REQUEST['oauth_token']) && $request_token['oauth_token'] !== $_REQUEST['oauth_token']) 
+  || (isset($_GET['denied'])) 
+  || !isset($_GET['oauth_token'])) {
     // Abort! Something is wrong.
-    die("Error! Returned OAuth token didn't match");
+
+
+
+    login_failure();
 }
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $request_token['oauth_token'], $request_token['oauth_token_secret']);
 $access_token = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
+
+if (!(isset($access_token["oauth_token"])) || !(isset($access_token["oauth_token_secret"])))
+{
+  login_failure();
+}
 
 //todo verify that we succeeded
 
@@ -45,8 +73,14 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oau
 $user_data = $connection->get("users/show", array("screen_name" => $access_token["screen_name"]));
 
 $_SESSION['profile_pic'] = $user_data->profile_image_url; 
+$_SESSION['screen_name'] =  $access_token["screen_name"]; 
 
-header('Location: http://v21.io/traceryhosting');
+if (!(isset($user_data) || !(isset($user_data->profile_image_url))))
+{
+  login_failure(); 
+}
+
+header('Location: http://cheapbotsdonequick.com');
 die();
 
 
