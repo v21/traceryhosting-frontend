@@ -20,7 +20,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 session_set_cookie_params(86400);
 session_start();
 
-if (!isset($_SESSION['oauth_token']))
+if (!isset($_SESSION['user_id']))
 {
 	?>
 
@@ -59,8 +59,9 @@ if (!isset($_SESSION['oauth_token']))
         <br><br>
         <div class="row">
 		  <div class="col-md-6 col-md-offset-3">
-		  <p>This site will help you make a Twitterbot! They're easy to make and free to run.
-		  </p>
+		  
+      <p>This site will help you make a Twitterbot! They're easy to make and free to run.
+      </p>
 
 		  <p>To use it, <a href="https://twitter.com/signup">create a Twitter account</a> for your bot to run under and then sign in below. 
 		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="http://v21.io">George Buckenham</a> - he can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>.</p>
@@ -91,7 +92,7 @@ if (!isset($_SESSION['oauth_token']))
           <li><a href="https://twitter.com/petitsmotifs">@petitsmotifs</a></li>
           <li><a href="https://twitter.com/l__l_l__l_l___l">@l__l_l__l_l___l</a></li>
           <li><a href="https://twitter.com/flowerscatalog">@flowerscatalog</a></li>
-          <li><a href="https://twitter.com/AbhorrentSexBot">@AbhorrentSexBot</a></li>
+          <!--<li><a href="https://twitter.com/AbhorrentSexBot">@AbhorrentSexBot</a></li>-->
           <li><a href="https://twitter.com/emojitoemoji">@emojitoemoji</a></li>
           <li><a href="https://twitter.com/legitvgcheats">@legitvgcheats</a></li>
           
@@ -127,9 +128,9 @@ die();
 
 }
 //we've got an account
-$stmt = $pdo->prepare('SELECT * FROM traceries WHERE token = :token');
+$stmt = $pdo->prepare('SELECT * FROM traceries WHERE user_id = :user_id');
 
-$stmt->execute(array('token' => $_SESSION['oauth_token']));
+$stmt->execute(array('user_id' => $_SESSION['user_id']));
 $result = $stmt->fetch(PDO::FETCH_ASSOC); 
 
 //todo handle failing to find user
@@ -174,7 +175,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <br>
         <div class="row">
 		  <div class="col-md-6 col-md-offset-3">
-          <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>.</p>
+          <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>, and hashtags with <code>\\#</code>,.</p>
           <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="http://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
 		  <ul>
 		  <li><a href="http://www.crystalcodepalace.com/traceryTut.html">Tracery tutorial</a></li>
@@ -264,7 +265,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <script src="js/vendor/bootstrap.min.js"></script>
 
-        <script src="js/tracery.min.js"></script>
+        <script src="js/tracery.js"></script>
         <script src="js/twitter-text-1.9.4.min.js"></script>
         <script src="js/expanding.js"></script>
         <script src="js/json2.js"></script>

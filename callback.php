@@ -57,15 +57,27 @@ if (!(isset($access_token["oauth_token"])) || !(isset($access_token["oauth_token
 
 //todo verify that we succeeded
 
-  $stmt = $pdo->prepare('INSERT INTO traceries (token,token_secret, screen_name) VALUES(:token, :token_secret, :screen_name) ON DUPLICATE KEY UPDATE token=:token2, token_secret=:token_secret2, screen_name=:screen_name2');
+
+//var_dump($access_token);
+
+//die();
+
+
+
+  $stmt = $pdo->prepare('INSERT INTO traceries (token,token_secret, screen_name, user_id) VALUES(:token, :token_secret, :screen_name, :user_id) ON DUPLICATE KEY UPDATE token=:token2, token_secret=:token_secret2, screen_name=:screen_name2, user_id=:user_id2');
 
   $stmt->execute(array('token' => $access_token["oauth_token"], 
                        'token_secret' => $access_token["oauth_token_secret"], 
                        'screen_name' => $access_token["screen_name"],
                        'token2' => $access_token["oauth_token"], 
                        'token_secret2' => $access_token["oauth_token_secret"], 
-                       'screen_name2' => $access_token["screen_name"]
+                       'screen_name2' => $access_token["screen_name"],
+                       'user_id' => $access_token["user_id"],
+                       'user_id2' => $access_token["user_id"]
                       ));
+
+
+
 
 $_SESSION['oauth_token'] = $access_token["oauth_token"]; //this should be this already?
 
@@ -74,6 +86,7 @@ $user_data = $connection->get("users/show", array("screen_name" => $access_token
 
 $_SESSION['profile_pic'] = $user_data->profile_image_url; 
 $_SESSION['screen_name'] =  $access_token["screen_name"]; 
+$_SESSION['user_id'] = $access_token["user_id"];
 
 if (!(isset($user_data) || !(isset($user_data->profile_image_url))))
 {

@@ -51,6 +51,8 @@ var generate = function()
 
 
 			var processedGrammar = tracery.createGrammar(parsed);
+			
+			processedGrammar.addModifiers(tracery.baseEngModifiers);
 
 			var tweet = _.escape(processedGrammar.flatten("#origin#"));
 			$('#generated-tweet').html(nl2br(tweet));
