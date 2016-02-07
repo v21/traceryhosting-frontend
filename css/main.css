@@ -85,3 +85,8 @@ sourcetext
     white-space: pre;
     overflow: scroll;
 }
+
+.form-group
+{
+  padding-bottom:10px;
+}

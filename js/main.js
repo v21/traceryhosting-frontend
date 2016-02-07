@@ -9,10 +9,16 @@ $('#tracery').bind('input propertychange', function() {
 });
 
 $('#frequency').change(function() {
-	generate();
 	unsaved = true;
 	changeSaveButtonColour();
 });
+
+
+$('#public_source').change(function() {
+	unsaved = true;
+	changeSaveButtonColour();
+});
+
 
 $( "#refresh-generated-tweet" ).bind( "click", function() {
   generate();
@@ -128,7 +134,7 @@ var generate = function()
 					var actualSVG = media.substr(5,media.length - 6);
 					var doc = parser.parseFromString(actualSVG, "image/svg+xml");
 					if(doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
-				        $('#tracery-validator').removeClass('hidden').html("SVG parsing error<br>" + nl2br(doc.getElementsByTagName('parsererror')[0].innerHTML) + "");
+				        $('#tracery-validator').removeClass('hidden').html("SVG parsing error<br>" + nl2br(doc.getElementsByTagName('parsererror')[0].innerHTML));
 				    }
 
 
@@ -227,10 +233,11 @@ $( "#tracery-form" ).submit(function( event ) {
   {
 	var freq = $('#frequency').val();
 	var tracery = $('#tracery').val();
+	var public_source = $('#public_source').val();
 	$.ajax({
 	  url: "update.php",
 	  method : "POST",
-	  data : {"frequency": freq , "tracery" : tracery},
+	  data : {"frequency": freq , "tracery" : tracery, "public_source" : public_source},
 	  dataType: "json"
 	})
 	  .done(function( data ) {

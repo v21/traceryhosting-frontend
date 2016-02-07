@@ -20,10 +20,8 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 session_set_cookie_params(86400);
 session_start();
 
-if (!isset($_SESSION['user_id']))
-{
-	?>
 
+?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -51,7 +49,10 @@ if (!isset($_SESSION['user_id']))
     </head>
     <body>
 
-
+<?php
+if (!isset($_SESSION['user_id']))
+{
+  ?>
 
     <div class="container-fluid">
 
@@ -140,33 +141,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	
 ?>
 
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <style>
-            body {
-                /*padding-top: 50px;*/
-                padding-bottom: 40px;
-            }
-        </style>
-        <!--<link rel="stylesheet" href="css/bootstrap-theme.min.css">-->
-        <link rel="stylesheet" href="css/main.css">
-		<link href='http://fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
-        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-    </head>
-    <body>
- 
 
 
     <div class="container-fluid">
@@ -229,7 +204,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	</div>
 <div class="form-inline">
     <div class="form-group">
-        <label for="frequency">Send a tweet </label>
+        <label for="frequency">Post a tweet </label>
 	    <select class="form-control" id="frequency" name="frequency">
 	    	<?php 
 	    		$frequencypossibilities = array(-1 => "Never", 10 => "Every 10 minutes", 30 => "Every half hour", 60 => "Every hour", 180 => "Every 3 hours", 360 => "Every 6 hours", 720 => "Twice a day", 1440 => "Once a day", 10080 => "Once a week", 43829 => "Once a month", 525949 => "Once a year");
@@ -245,12 +220,27 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	        <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
 	        <span class="username-text"><?php echo($result['screen_name']) ?></span>
 	        </a>
-        </div>
-        <a class="btn  btn-default logout" href="logout.php"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Log Out</a>
-    <div class="button form-group pull-right">
-    
-        <button id="save-button" class="btn btn-default">Save</button>
     </div>
+    <br>
+
+    <div class="form-group">
+          <select class="form-control" id="public_source" name="public_source">
+          <?php 
+            $sharepossibilities = array(1 => "Share", 0 => "Don't share");
+
+            foreach ($sharepossibilities as $sharevalue => $sharelabel) {
+              echo('<option value="' . $sharevalue . '" '. ($result['public_source'] == $sharevalue ? 'selected' : '') .'>' . $sharelabel . '</option>');
+            }
+          ?> 
+          </select> Tracery source at <a target="_blank" href="/source/<?php echo($result['screen_name']) ?>">cheapbotsdonequick.com/source/<?php echo($result['screen_name']) ?></a>.
+
+        </div>
+    <br>
+    <button id="save-button" class="btn btn-default">Save</button>
+    <div class="button form-group pull-right">
+        <a class="btn  btn-default logout" href="logout.php"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Log Out</a>
+    </div>    
+    
 </div>
 
 </form>
