@@ -38,8 +38,53 @@ nl2br = function (str, is_xhtml) {
 	return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1'+ breakTag +'$2');
 };
 
+
+// this is much more complex than i thought it would be
+// but this function will find our image tags 
+// full credit to BooDooPerson - https://twitter.com/BooDooPerson/status/683450163608817664
+// Reverse the string, check with our fucked up regex, return null or reverse matches back
+var matchBrackets = function(text) {
+  
+  // simple utility function
+  function reverseString(s) {
+    return s.split('').reverse().join('');
+  }
+
+  // this is an inverstion of the natural order for this RegEx:
+  var bracketsRe = /(\}(?!\\)(.+?)\{(?!\\))/g;
+
+  text = reverseString(text);
+  var matches = text.match(bracketsRe);
+  if(matches === null) {
+    return null;
+  }
+  else {
+    return matches.map(reverseString).reverse();
+  }
+}
+
+
+//see matchBrackets for why this is like this
+function removeBrackets (text) {
+  
+  // simple utility function
+  var reverseString = function(s) {
+    return s.split('').reverse().join('');
+  }
+
+  // this is an inverstion of the natural order for this RegEx:
+  var bracketsRe = /(\}(?!\\)(.+?)\{(?!\\))/g;
+
+  text = reverseString(text);
+  return reverseString(text.replace(bracketsRe, ""));
+}
+
+
 var generate = function()
 {
+	var parser = new DOMParser();
+    var parsererrorNS = parser.parseFromString('INVALID', 'text/xml').getElementsByTagName("parsererror")[0].namespaceURI;
+
 	var startGenerate = _.now();
 	var string = $('textarea#tracery').val();
 	try{
@@ -51,11 +96,16 @@ var generate = function()
 
 
 			var processedGrammar = tracery.createGrammar(parsed);
-			
-			processedGrammar.addModifiers(tracery.baseEngModifiers);
 
-			var tweet = _.escape(processedGrammar.flatten("#origin#"));
-			$('#generated-tweet').html(nl2br(tweet));
+			processedGrammar.addModifiers(tracery.baseEngModifiers);
+			var tweet = processedGrammar.flatten("#origin#");
+			var media = matchBrackets(tweet);
+
+
+			
+			tweet = removeBrackets(tweet);
+			tweet = _.escape(tweet);
+			$('#generated-tweet').html(nl2br(tweet) + "<div id=\"tweet-media\"></div>");
 
 			if (twttr.txt.getTweetLength(tweet) > 140)
 			{
@@ -68,6 +118,35 @@ var generate = function()
 				$('#generated-tweet').removeClass('too-long');
 				$('#tweet-generated-tweet').removeAttr('disabled').removeClass('disabled');
 			}
+ 
+
+			_.each(media, function(media){
+
+				$('#tweet-generated-tweet').attr('disabled','disabled').addClass('disabled');
+				if (media.indexOf("svg ") === 1)
+				{
+					var actualSVG = media.substr(5,media.length - 6);
+					var doc = parser.parseFromString(actualSVG, "image/svg+xml");
+					if(doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+				        $('#tracery-validator').removeClass('hidden').html("SVG parsing error<br>" + nl2br(doc.getElementsByTagName('parsererror')[0].innerHTML) + "");
+				    }
+
+
+					$('#tweet-media').append("<div class=\"svg-media\">" + actualSVG + "</div>");
+					if (media.indexOf("viewBox") == -1)
+					{
+						$('#tracery-validator').removeClass('hidden').text("SVGs should specify a viewBox attribute");
+					}
+				}
+				else if (media.indexOf("img ") === 1)
+				{
+					fetch_img, media.substr(5)
+				}
+				else
+				{
+					$('#tracery-validator').removeClass('hidden').text("Unknown media type " + media.substr(1,4));
+				}
+			});
 
 			valid = true;
 

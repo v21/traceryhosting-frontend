@@ -32,7 +32,7 @@ if (!isset($_SESSION['user_id']))
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>Cheap Bots, Done Quick!</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -166,7 +166,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     </head>
     <body>
-
+ 
 
 
     <div class="container-fluid">
@@ -175,7 +175,9 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <br>
         <div class="row">
 		  <div class="col-md-6 col-md-offset-3">
-          <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>, and hashtags with <code>\\#</code>,.</p>
+          <p><b>Note: currently setting variables (like part 6 <a href="http://www.crystalcodepalace.com/traceryTut.html">here</a>) is bugged. They will only work if not specified within their own node.</b></p>
+          <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>, and hashtags with <code>\\#</code>.</p>
+          <p>SVG files can now be attached to tweets. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. Note: this feature is still in development, so the tweet button on this page will not work. And the debugging info is better in FF than other browsers.</p>
           <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="http://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
 		  <ul>
 		  <li><a href="http://www.crystalcodepalace.com/traceryTut.html">Tracery tutorial</a></li>
@@ -218,7 +220,10 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 		<button type="button" id="refresh-generated-tweet" class="btn btn-default"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 	 	<button type="button" id="tweet-generated-tweet" class="btn btn-tweet">Tweet</button>
 		</div>
-	  	<div id="generated-tweet" style="overflow: auto;" class="well well-sm">-----</div>
+	  	<div id="generated-tweet" style="overflow: auto;" class="well well-sm">-----
+        <div id="tweet-media"> 
+        </div>
+      </div>
 	  	
 	 </div>
 	</div>

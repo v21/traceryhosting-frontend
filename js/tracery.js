@@ -5,9 +5,16 @@
 var tracery = function() {
 
     var TraceryNode = function(parent, childIndex, settings) {
+		this.errors = [];
+
+		// No input? Add an error, but continue anyways
         if (settings.raw === undefined) {
-            throw ("No raw input for node");
+			this.errors.push("Empty input for node");
+			settings.raw = "";
         }
+
+		// If the root node of an expansion, it will have the grammar passed as the 'parent'
+		//  set the grammar from the 'parent', and set all other values for a root node
         if ( parent instanceof tracery.Grammar) {
             this.grammar = parent;
             this.parent = null;
@@ -45,6 +52,13 @@ var tracery = function() {
         this.childRule = childRule;
         if (this.childRule !== undefined) {
             var sections = tracery.parse(childRule);
+
+			// Add errors to this
+			if (sections.errors.length > 0) {
+				this.errors = this.errors.concat(sections.errors);
+
+			}
+
             for (var i = 0; i < sections.length; i++) {
                 this.children[i] = new TraceryNode(this, i, sections[i]);
                 if (!preventRecursion)
@@ -54,7 +68,8 @@ var tracery = function() {
                 this.finishedText += this.children[i].finishedText;
             }
         } else {
-
+			// In normal operation, this shouldn't ever happen
+			this.errors.push("No child rule provided, can't expand children");
             console.warn("No child rule provided, can't expand children");
         }
     };
@@ -89,6 +104,7 @@ var tracery = function() {
             case 1:
                 // Parse to find any actions, and figure out what the symbol is
                 this.preactions = [];
+				this.postactions = [];
 
                 var parsed = tracery.parseTag(this.raw);
 
@@ -97,49 +113,69 @@ var tracery = function() {
                 this.modifiers = parsed.modifiers;
 
                 // Create all the preactions from the raw syntax
-                if (parsed.preactions.length > 0) {
-                    this.preactions = [];
                     for (var i = 0; i < parsed.preactions.length; i++) {
                         this.preactions[i] = new NodeAction(this, parsed.preactions[i].raw);
                     }
+				for (var i = 0; i < parsed.postactions.length; i++) {
+					//   this.postactions[i] = new NodeAction(this, parsed.postactions[i].raw);
+				}
 
                     // Make undo actions for all preactions (pops for each push)
-                    // TODO
+				for (var i = 0; i < this.preactions.length; i++) {
+					if (this.preactions[i].type === 0)
+						this.postactions.push(this.preactions[i].createUndo());
+				}
 
                     // Activate all the preactions
                     for (var i = 0; i < this.preactions.length; i++) {
                         this.preactions[i].activate();
                     }
 
-                }
-
                 this.finishedText = this.raw;
 
                 // Expand (passing the node, this allows tracking of recursion depth)
-                var selectedRule = this.grammar.selectRule(this.symbol, this);
 
-                if (!selectedRule) {
-                    this.expansionErrors.push({
-                        log : "Child rule not created",
-                    });
-                }
+				var selectedRule = this.grammar.selectRule(this.symbol, this, this.errors);
+
                 this.expandChildren(selectedRule, preventRecursion);
 
                 // Apply modifiers
+				// TODO: Update parse function to not trigger on hashtags within parenthesis within tags,
+				//   so that modifier parameters can contain tags "#story.replace(#protagonist#, #newCharacter#)#"
                 for (var i = 0; i < this.modifiers.length; i++) {
-                    var mod = this.grammar.modifiers[this.modifiers[i]];
-                    if (!mod)
-                        this.finishedText += "((." + this.modifiers[i] + "))";
-                    else
-                        this.finishedText = mod(this.finishedText);
+					var modName = this.modifiers[i];
+					var modParams = [];
+					if (modName.indexOf("(") > 0) {
+						var regExp = /\(([^)]+)\)/;
+
+						// Todo: ignore any escaped commas.  For now, commas always split
+						var modParams = regExp.exec(this.modifiers[i])[1].split(",");
+						modName = this.modifiers[i].substring(0, modName.indexOf("("));
                 }
+
+					var mod = this.grammar.modifiers[modName];
+
+					// Missing modifier?
+					if (!mod) {
+						this.errors.push("Missing modifier " + modName);
+						this.finishedText += "((." + modName + "))";
+					} else {
+						this.finishedText = mod(this.finishedText, modParams);
+
+					}
+
+				}
+
                 // Perform post-actions
+				for (var i = 0; i < this.postactions.length; i++) {
+					this.postactions[i].activate();
+				}
                 break;
             case 2:
 
                 // Just a bare action?  Expand it!
-                this.preActions = [new NodeAction(this, this.raw)];
-                this.preActions[0].activate();
+				this.action = new NodeAction(this, this.raw);
+				this.action.activate();
 
                 // No visible text for an action
                 // TODO: some visible text for if there is a failure to perform the action?
@@ -171,6 +207,7 @@ var tracery = function() {
         // No colon? A function!
         if (sections.length === 1) {
             this.type = 2;
+
         }
 
         // Colon? It's either a push or a pop
@@ -185,6 +222,14 @@ var tracery = function() {
     }
 
 
+	NodeAction.prototype.createUndo = function() {
+		if (this.type === 0) {
+			return new NodeAction(this.node, this.target + ":POP");
+		}
+		// TODO Not sure how to make Undo actions for functions or POPs
+		return null;
+	};
+
     NodeAction.prototype.activate = function() {
         var grammar = this.node.grammar;
         switch(this.type) {
@@ -196,15 +241,31 @@ var tracery = function() {
             this.ruleNode.expand();
             this.ruleText = this.ruleNode.finishedText;
 
-            grammar.pushRules(this.target, this.ruleText, this);
+			// TODO: escape commas properly
+			grammar.pushRules(this.target, this.ruleText.split(/,/), this);
             break;
         case 1:
+			grammar.popRules(this.target);
             break;
         case 2:
+			grammar.flatten(this.target);
             break;
         }
 
     };
+
+	NodeAction.prototype.toText = function() {
+		switch(this.type) {
+		case 0:
+			return this.target + ":" + this.rule;
+		case 1:
+			return this.target + ":POP";
+		case 2:
+			return "((some function))";
+		default:
+			return "((Unknown Action))";
+		}
+	};
 
     // Sets of rules
     // Can also contain conditional or fallback sets of rulesets)
@@ -212,9 +273,6 @@ var tracery = function() {
         this.raw = raw;
         this.grammar = grammar;
         this.falloff = 1;
-        this.distribution = "random";
-        if (this.grammar.distribution)
-            this.distribution = this.grammar.distribution;
 
         if (Array.isArray(raw)) {
             this.defaultRules = raw;
@@ -226,14 +284,14 @@ var tracery = function() {
 
     };
 
-    RuleSet.prototype.getRule = function() {
+	RuleSet.prototype.selectRule = function(errors) {
         // console.log("Get rule", this.raw);
         // Is there a conditional?
         if (this.conditionalRule) {
             var value = this.grammar.expand(this.conditionalRule);
             // does this value match any of the conditionals?
             if (this.conditionalValues[value]) {
-                var v = this.conditionalValues[value].getRule();
+				var v = this.conditionalValues[value].selectRule(errors);
                 if (v !== null && v !== undefined)
                     return v;
             }
@@ -243,7 +301,7 @@ var tracery = function() {
         // Is there a ranked order?
         if (this.ranking) {
             for (var i = 0; i < this.ranking.length; i++) {
-                var v = this.ranking.getRule();
+				var v = this.ranking.selectRule();
                 if (v !== null && v !== undefined)
                     return v;
             }
@@ -255,9 +313,12 @@ var tracery = function() {
             var index = 0;
             // Select from this basic array of rules
 
-            // Get the distribution
+			// Get the distribution from the grammar if there is no other
+			var distribution = this.distribution;
+			if (!distribution)
+				distribution = this.grammar.distribution;
 
-            switch(this.distribution) {
+			switch(distribution) {
             case "shuffle":
 
                 // create a shuffle desk
@@ -273,8 +334,10 @@ var tracery = function() {
 
                 break;
             case "weighted":
+				errors.push("Weighted distribution not yet implemented");
                 break;
             case "falloff":
+				errors.push("Falloff distribution not yet implemented");
                 break;
             default:
 
@@ -287,6 +350,9 @@ var tracery = function() {
             this.defaultUses[index] = ++this.defaultUses[index] || 1;
             return this.defaultRules[index];
         }
+
+		errors.push("No default rules defined for " + this);
+		return null;
 
     };
 
@@ -318,8 +384,6 @@ var tracery = function() {
         return array;
     }
 
-   
-
     var Symbol = function(grammar, key, rawRules) {
         // Symbols can be made with a single value, and array, or array of objects of (conditions/values)
         this.key = key;
@@ -349,14 +413,24 @@ var tracery = function() {
         this.stack.pop();
     };
 
-    Symbol.prototype.selectRule = function(node) {
+	Symbol.prototype.selectRule = function(node, errors) {
         this.uses.push({
             node : node
         });
 
-        if (this.stack.length === 0)
-            throw ("No rules for " + this.key);
-        return this.stack[this.stack.length - 1].getRule();
+		if (this.stack.length === 0) {
+			errors.push("The rule stack for '" + this.key + "' is empty, too many pops?");
+			return "((" + this.key + "))";
+		}
+
+		return this.stack[this.stack.length - 1].selectRule();
+	};
+
+	Symbol.prototype.getActiveRules = function() {
+		if (this.stack.length === 0) {
+			return null;
+		}
+		return this.stack[this.stack.length - 1].selectRule();
     };
 
     var Grammar = function(raw, settings) {
@@ -432,13 +506,16 @@ var tracery = function() {
 
     Grammar.prototype.popRules = function(key) {
         if (!this.symbols[key])
-            throw ("No symbol for key " + key);
+			this.errors.push("Can't pop: no symbol for key " + key);
         this.symbols[key].popRules();
     };
 
-    Grammar.prototype.selectRule = function(key, node) {
-        if (this.symbols[key])
-            return this.symbols[key].selectRule(node);
+	Grammar.prototype.selectRule = function(key, node, errors) {
+		if (this.symbols[key]) {
+			var rule = this.symbols[key].selectRule(node, errors);
+
+			return rule;
+		}
 
         // Failover to alternative subgrammars
         for (var i = 0; i < this.subgrammars.length; i++) {
@@ -447,6 +524,8 @@ var tracery = function() {
                 return this.subgrammars[i].symbols[key].selectRule();
         }
 
+		// No symbol?
+		errors.push("No symbol for '" + key + "'");
         return "((" + key + "))";
     };
 
@@ -496,14 +575,26 @@ var tracery = function() {
             var sections = [];
             var escaped = false;
 
-            sections.errors = [];
+			var errors = [];
             var start = 0;
 
             var escapedSubstring = "";
             var lastEscapedChar = undefined;
+
+			if (rule === null) {
+				var sections = [];
+				sections.errors = errors;
+
+				return sections;
+			}
+
             function createSection(start, end, type) {
                 if (end - start < 1) {
-                    sections.errors.push(start + ": 0-length section of type " + type);
+					if (type === 1)
+						errors.push(start + ": empty tag");
+					if (type === 2)
+						errors.push(start + ": empty action");
+
                 }
                 var rawSubstring;
                 if (lastEscapedChar !== undefined) {
@@ -535,6 +626,7 @@ var tracery = function() {
                         }
                         depth++;
                         break;
+
                     case ']':
                         depth--;
 
@@ -542,7 +634,6 @@ var tracery = function() {
                         if (depth === 0 && !inTag) {
                             createSection(start, i, 2);
                             start = i + 1;
-
                         }
                         break;
 
@@ -577,72 +668,28 @@ var tracery = function() {
                 createSection(start, rule.length, 0);
 
             if (inTag) {
-                sections.errors.push("Unclosed tag");
+                errors.push("Unclosed tag");
             }
             if (depth > 0) {
-                sections.errors.push("Too many [");
+                errors.push("Too many [");
             }
             if (depth < 0) {
-                sections.errors.push("Too many ]");
+                errors.push("Too many ]");
             }
 
-            return sections;
-        },
+            // Strip out empty plaintext sections
 
-        test : function() {
-            var content = $("#content-col");
-            var testlog = $("<div/>", {
-                class : "card debug-output",
-            }).appendTo(content);
-
-            var tests = {
-                basic : ["", "a", "tracery"],
-                hashtag : ["#a#", "a#b#", "aaa#b##cccc#dd#eee##f#"],
-                hashtagWrong : ["##", "#", "a#a", "#aa#aa###"],
-                escape : ["\\#test\\#", "\\[#test#\\]"],
-            };
-
-            var testGrammar = tracery.createGrammar({
-                animal : ["capybara", "unicorn", "university", "umbrella", "u-boat", "boa", "ocelot", "zebu", "finch", "fox", "hare", "fly"],
-                color : ["yellow", "maroon", "indigo", "ivory", "obsidian"],
-                mood : ["elated", "irritable", "morose", "enthusiastic"],
-                story : ["[mc:#animal#]Once there was #mc.a#, a very #mood# #mc#"]
+            sections = sections.filter(function(section) {
+                if (section.type === 0 && section.raw.length === 0)
+                    return false;
+                return true;
             });
-
-            var toParse = [];
-            for (var i = 0; i < 20; i++) {
-                var expansion = testGrammar.expand("[test:#foo#]foo");
-                console.log(expansion.finishedText);
-            }
-
-            /*
-             $.each(tests, function(index, testSet) {
-             for (var i = 0; i < testSet.length; i++) {
-             var parsed = tracery.parse(testSet[i]);
-             var output = "<span class='section-raw'>" + testSet[i] + "</span> ";
-             output += tracery.parsedSectionsToHTML(parsed);
-             output = output.replace(/\\/g, "&#92;");
-             testlog.append(output + "<p>");
-             }
-             });
-             */
-        },
-
-        parsedSectionsToHTML : function(sections) {
-            var output = "";
-            for (var i = 0; i < sections.length; i++) {
-                output += "<span class='section-" + sections[i].type + "'>" + sections[i].raw + "</span> ";
-            }
-            if (sections.errors) {
-                for (var i = 0; i < sections.errors.length; i++) {
-                    output += "<span class='section-error'>" + sections.errors[i] + "</span> ";
-                }
-            }
-            return output;
+            sections.errors = errors;
+            return sections;
         },
     };
 
-
+        
     function isVowel(c) {
         var c2 = c.toLowerCase();
         return (c2 === 'a') || (c2 === 'e') || (c2 === 'i') || (c2 === 'o') || (c2 === 'u');
@@ -651,23 +698,15 @@ var tracery = function() {
     function isAlphaNum(c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
     };
+    function escapeRegExp(str) {
+        return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    }
 
     var baseEngModifiers = {
 
-        varyTune : function(s) {
-            var s2 = "";
-            var d = Math.ceil(Math.random() * 5);
-            for (var i = 0; i < s.length; i++) {
-                var c = s.charCodeAt(i) - 97;
-                if (c >= 0 && c < 26) {
-                    var v2 = (c + d) % 13 + 97;
-                    s2 += String.fromCharCode(v2);
-                } else {
-                    s2 += String.fromCharCode(c + 97);
-                }
-
-            }
-            return s2;
+        replace : function(s, params) {
+            //http://stackoverflow.com/questions/1144783/replacing-all-occurrences-of-a-string-in-javascript
+            return s.replace(new RegExp(escapeRegExp(params[0]), 'g'), params[1]);
         },
 
         capitalizeAll : function(s) {
@@ -711,6 +750,15 @@ var tracery = function() {
 
             return "a " + s;
 
+        },
+
+        firstS : function(s) {
+            console.log(s);
+            var s2 = s.split(" ");
+
+            var finished = baseEngModifiers.s(s2[0]) + " " + s2.slice(1).join(" ");
+            console.log(finished);
+            return finished;
         },
 
         s : function(s) {
@@ -760,10 +808,9 @@ var tracery = function() {
         }
     };
 
+
+
     tracery.baseEngModifiers = baseEngModifiers; 
- 
-
-
     // Externalize
     tracery.TraceryNode = TraceryNode;
 
@@ -772,6 +819,5 @@ var tracery = function() {
     tracery.RuleSet = RuleSet;
     return tracery;
 }();
-
 
 module.exports = tracery; 
