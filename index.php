@@ -82,20 +82,20 @@ if (!isset($_SESSION['user_id']))
           <div class="col-md-6 col-md-offset-3">
           Some examples of twitterbots made with this site:
           <ul id="shuffle">
-          <li><a href="https://twitter.com/ItsMrTree">@ItsMrTree</a></li>
-          <li><a href="https://twitter.com/gnuerror">@gnuerror</a></li>
-          <li><a href="https://twitter.com/memorypoem">@memorypoem</a></li>
-          <li><a href="https://twitter.com/unicode_garden">@unicode_garden</a></li>
+          <li><a href="https://twitter.com/hashfacade">@hashfacade</a> <a href="http://cheapbotsdonequick.com/source/hashfacade">(source)</a></li>
+          <li><a href="https://twitter.com/gnuerror">@gnuerror</a> <a href="http://cheapbotsdonequick.com/source/gnuerror">(source)</a></li>
+          <li><a href="https://twitter.com/unicode_garden">@unicode_garden</a> <a href="http://cheapbotsdonequick.com/source/unicode_garden">(source)</a></li>
+          <li><a href="https://twitter.com/softlandscapes">@softlandscapes</a> <a href="http://cheapbotsdonequick.com/source/softlandscapes">(source)</a></li>
+          <li><a href="https://twitter.com/thetinygallery">@thetinygallery</a> <a href="http://cheapbotsdonequick.com/source/thetinygallery">(source)</a></li>
+          <li><a href="https://twitter.com/bot_teleport">@bot_teleport</a> <a href="http://cheapbotsdonequick.com/source/bot_teleport">(source)</a></li>
+          <li><a href="https://twitter.com/autoflaneur">@autoflaneur</a> <a href="http://cheapbotsdonequick.com/source/autoflaneur">(source)</a></li>
+          <li><a href="https://twitter.com/lotsofeyes">@lotsofeyes</a> <a href="http://cheapbotsdonequick.com/source/lotsofeyes">(source)</a></li>
+          <li><a href="https://twitter.com/thinkpiecebot">@thinkpiecebot</a></li>
           <li><a href="https://twitter.com/infinitedeserts">@infinitedeserts</a></li>
-          <li><a href="https://twitter.com/FoleyArtists">@FoleyArtists</a></li>
+          <li><a href="https://twitter.com/FoleyArtists">@FoleyArtists</a> <a href="http://cheapbotsdonequick.com/source/FoleyArtists">(source)</a></li>
           <li><a href="https://twitter.com/What_Hastings">@What_Hastings</a></li>
-          <li><a href="https://twitter.com/weirdLittleMen">@weirdLittleMen</a></li>
           <li><a href="https://twitter.com/petitsmotifs">@petitsmotifs</a></li>
-          <li><a href="https://twitter.com/l__l_l__l_l___l">@l__l_l__l_l___l</a></li>
-          <li><a href="https://twitter.com/flowerscatalog">@flowerscatalog</a></li>
           <!--<li><a href="https://twitter.com/AbhorrentSexBot">@AbhorrentSexBot</a></li>-->
-          <li><a href="https://twitter.com/emojitoemoji">@emojitoemoji</a></li>
-          <li><a href="https://twitter.com/legitvgcheats">@legitvgcheats</a></li>
           
           </ul>
 
@@ -150,13 +150,13 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <br>
         <div class="row">
 		  <div class="col-md-6 col-md-offset-3">
-          <p><b>Note: currently setting variables (like part 6 <a href="http://www.crystalcodepalace.com/traceryTut.html">here</a>) is bugged. They will only work if not specified within their own node.</b></p>
           <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>, and hashtags with <code>\\#</code>.</p>
-          <p>SVG files can now be attached to tweets. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. Note: this feature is still in development, so the tweet button on this page will not work. And the debugging info is better in FF than other browsers.</p>
+          <p>SVG files can now be attached to tweets - see for example <a href="http://cheapbotsdonequick.com/source/hashfacade">@hashfacade</a>. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. Note: this feature is still in development, so the tweet button on this page will not work. And the debugging info is better in FF than other browsers.</p>
           <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="http://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
 		  <ul>
 		  <li><a href="http://www.crystalcodepalace.com/traceryTut.html">Tracery tutorial</a></li>
 		  <li><a href="http://www.brightspiral.com/tracery/">Tracery visual editor</a></li>
+      <li><a href="https://github.com/dariusk/corpora">Useful word collections</a></li>
 		  <li><a href="https://github.com/v21/tracerybot">Example of a self-hosted bot running on Tracery</a></li>
 		  </ul>
 		  <p>
@@ -181,7 +181,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         }
         else
         {
-        	echo($result['tracery']); /*todo : XSS vuln? */
+        	echo(htmlspecialchars($result['tracery'], ENT_HTML5 | ENT_QUOTES , "UTF-8")); /*todo : XSS vuln? */
         }
 ?>
 
@@ -204,7 +204,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	</div>
 <div class="form-inline">
     <div class="form-group">
-        <label for="frequency">Post a tweet </label>
+        
 	    <select class="form-control" id="frequency" name="frequency">
 	    	<?php 
 	    		$frequencypossibilities = array(-1 => "Never", 10 => "Every 10 minutes", 30 => "Every half hour", 60 => "Every hour", 180 => "Every 3 hours", 360 => "Every 6 hours", 720 => "Twice a day", 1440 => "Once a day", 10080 => "Once a week", 43829 => "Once a month", 525949 => "Once a year");
@@ -216,7 +216,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <div class="form-group">
-        <span style="padding-left:20px">as</span> <?php echo('<a class="username" href="http://twitter.com/' . $result['screen_name']. '">') ?>
+        post a tweet as <?php echo('<a class="username" href="http://twitter.com/' . $result['screen_name']. '">') ?>
 	        <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
 	        <span class="username-text"><?php echo($result['screen_name']) ?></span>
 	        </a>

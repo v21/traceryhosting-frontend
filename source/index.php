@@ -101,7 +101,7 @@ else
         <textarea class="form-control expanding" rows="25" id="tracery" name="tracery">
 <?php 
         
-  echo(htmlentities($result['tracery'])); 
+  echo(htmlentities($result['tracery'], ENT_QUOTES | ENT_HTML5, "UTF-8")); 
 
 ?>
 

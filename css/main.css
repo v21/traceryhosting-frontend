@@ -90,3 +90,16 @@ sourcetext
 {
   padding-bottom:10px;
 }
+
+.parsererror h3
+{
+  font-size: 100%;
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+  font-weight: normal;
+  line-height: 1;
+  color: #ffffff;
+}
+
+

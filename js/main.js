@@ -25,6 +25,11 @@ $( "#refresh-generated-tweet" ).bind( "click", function() {
 });
 
 
+$(window).bind('beforeunload', function(e){
+	if (unsaved) return "This page is asking you to confirm that you want to leave - data you have entered may not be saved";
+});
+
+
 $(window).load(function() {
 	if (tracery.createGrammar)
 	{
@@ -86,11 +91,9 @@ function removeBrackets (text) {
 }
 
 
+
 var generate = function()
 {
-	var parser = new DOMParser();
-    var parsererrorNS = parser.parseFromString('INVALID', 'text/xml').getElementsByTagName("parsererror")[0].namespaceURI;
-
 	var startGenerate = _.now();
 	var string = $('textarea#tracery').val();
 	try{
@@ -110,8 +113,7 @@ var generate = function()
 
 			
 			tweet = removeBrackets(tweet);
-			tweet = _.escape(tweet);
-			$('#generated-tweet').html(nl2br(tweet) + "<div id=\"tweet-media\"></div>");
+			$('#generated-tweet').html(nl2br(_.escape(tweet)) + "<div id=\"tweet-media\"></div>");
 
 			if (twttr.txt.getTweetLength(tweet) > 140)
 			{
@@ -132,17 +134,15 @@ var generate = function()
 				if (media.indexOf("svg ") === 1)
 				{
 					var actualSVG = media.substr(5,media.length - 6);
+
+					var parser = new DOMParser();
 					var doc = parser.parseFromString(actualSVG, "image/svg+xml");
-					if(doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
-				        $('#tracery-validator').removeClass('hidden').html("SVG parsing error<br>" + nl2br(doc.getElementsByTagName('parsererror')[0].innerHTML));
-				    }
+					
+
+				    validateSVG(doc, actualSVG);
 
 
 					$('#tweet-media').append("<div class=\"svg-media\">" + actualSVG + "</div>");
-					if (media.indexOf("viewBox") == -1)
-					{
-						$('#tracery-validator').removeClass('hidden').text("SVGs should specify a viewBox attribute");
-					}
 				}
 				else if (media.indexOf("img ") === 1)
 				{
@@ -162,7 +162,7 @@ var generate = function()
 
 
 
-			$('#tracery-validator').removeClass('hidden').text("Tracery parse error: " + e);
+			$('#tracery-validator').removeClass('hidden').text("Tracery parse error: " + _.escape(e));
 			valid = false;
 		}
 	}
@@ -173,10 +173,10 @@ var generate = function()
 			var result = jsonlint.parse(string);
 			if (result) {
 				//valid via jsonlint?!
-				$('#tracery-validator').removeClass('hidden').text("Unknown JSON parse error: " + e);
+				$('#tracery-validator').removeClass('hidden').text("Unknown JSON parse error: " + _.escape(e));
 			}
 		} catch(e) {
-			$('#tracery-validator').removeClass('hidden').html("JSON parse error:  <pre>" + e + "</pre>");
+			$('#tracery-validator').removeClass('hidden').html("JSON parse error:  <pre>" + _.escape(e) + "</pre>");
 		}
 
 		valid = false;
@@ -194,6 +194,78 @@ $( window ).unload(function() {
 		return "Unsaved changes";
 	}
 });
+
+var validateSVG = function(doc, actualSVG)
+{
+	var parser = new DOMParser();
+	var parsererrorNS = parser.parseFromString('INVALID', 'text/xml').getElementsByTagName("parsererror")[0].namespaceURI;
+
+
+    if (doc.documentElement.getAttribute("width") === null)
+    {
+    	$('#tracery-validator').removeClass('hidden').html("SVG element must specify a <code>width</code>");
+    }
+    if (doc.documentElement.getAttribute("height") === null)
+    {
+    	$('#tracery-validator').removeClass('hidden').html("SVG element must specify a <code>height</code>");
+    }
+/*
+    if (doc.documentElement.getAttribute("xmlns") === null)
+    {
+    	$('#tracery-validator').removeClass('hidden').html("SVG element should probably specify a <code>xmlns</code> attribute.");
+    }
+    if (doc.documentElement.getAttribute("xmlns:xlink") === null)
+    {
+    	$('#tracery-validator').removeClass('hidden').html("SVG element should probably specify a <code>xmlns:xlink</code> attribute.");
+    }*/
+
+
+	if(doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+
+	var excerpt = "";
+	//chrome
+	var bracketsRe = /line (\d+) at column (\d+)/;
+	var errorText = new XMLSerializer().serializeToString(doc.documentElement);
+	var matches = errorText.match(bracketsRe);
+	if(matches !== null) {
+	var line = matches[1];
+	var col = matches[2];
+		excerpt = excerptAtLineCol(actualSVG, matches[1] - 1, matches[2] - 1, 1);
+	}
+
+	
+
+
+        $('#tracery-validator').removeClass('hidden').html("SVG parsing error<br><pre>" + _.escape(excerpt) + "</pre><span class=\"parsererror\">" + nl2br(doc.getElementsByTagName('parsererror')[0].innerHTML) + "</span>");
+    }
+
+}
+
+//from https://github.com/smallhelm/excerpt-at-line-col/blob/master/index.js
+
+var excerptAtLineCol = function(text, line_n, col_n, n_surrounding_lines){
+  n_surrounding_lines = n_surrounding_lines || 0;
+
+  return text.split("\n").map(function(line, line_i){
+    return {
+      line: line,
+      line_n: line_i
+    };
+  }).filter(function(l){
+    return Math.abs(l.line_n - line_n) <= n_surrounding_lines;
+  }).map(function(l){
+    if(l.line_n !== line_n){
+      return l.line;
+    }
+    var col_position_whitespace = '';
+    var j;
+    for(j=0; j<Math.min(col_n, l.line.length); j++){
+      col_position_whitespace += l.line[j].replace(/[^\s]/g, " ");
+    }
+    return l.line + "\n" + col_position_whitespace + '^';
+  }).join("\n");
+};
+
 
 var changeSaveButtonColour = function()
 {
