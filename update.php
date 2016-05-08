@@ -21,7 +21,7 @@ $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-session_set_cookie_params(86400);
+session_set_cookie_params(2678000);
 session_start();
 
 if (isset($_SESSION['oauth_token']))

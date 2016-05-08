@@ -10,7 +10,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 define('OAUTH_CALLBACK', "http://cheapbotsdonequick.com/callback.php");
 
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
-session_set_cookie_params(86400);
+session_set_cookie_params(2678000);
 session_start();
 
 $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => OAUTH_CALLBACK));
