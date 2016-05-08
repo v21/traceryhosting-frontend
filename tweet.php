@@ -34,6 +34,20 @@ if (isset($_SESSION['oauth_token']))
 		$stmt->execute(array('user_id' => $_SESSION['user_id']));
 		$result = $stmt->fetch(PDO::FETCH_ASSOC); 
 
+		if ($result['blocked_status'] != 0) //are they blocked
+		{
+			switch ($result['blocked_status']) {
+				case 1: //hellbanned
+					die ("{\"success\": true}");
+					break;
+				
+				default:
+					die ("{\"success\": false, \"reason\" : \"This account has been blocked.\"}");
+					break;
+			}
+		    	
+		}
+
 		$descriptorspec = array(
 		   0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
 		   1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
