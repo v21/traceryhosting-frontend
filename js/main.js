@@ -91,7 +91,7 @@ function removeBrackets (text) {
 }
 
 
-
+var tweet; //global so we can see it when we press the tweet button
 var generate = function()
 {
 	var startGenerate = _.now();
@@ -107,15 +107,15 @@ var generate = function()
 			var processedGrammar = tracery.createGrammar(parsed);
 
 			processedGrammar.addModifiers(tracery.baseEngModifiers);
-			var tweet = processedGrammar.flatten("#origin#");
+			tweet = processedGrammar.flatten("#origin#");
 			var media = matchBrackets(tweet);
 
 
 			
-			tweet = removeBrackets(tweet);
-			$('#generated-tweet').html(nl2br(_.escape(tweet)) + "<div id=\"tweet-media\"></div>");
+			var just_text_tweet = removeBrackets(tweet);
+			$('#generated-tweet').html(nl2br(_.escape(just_text_tweet)) + "<div id=\"tweet-media\"></div>");
 
-			if (twttr.txt.getTweetLength(tweet) > 140)
+			if (twttr.txt.getTweetLength(just_text_tweet) > 140)
 			{
 				$('#generated-tweet').addClass('too-long');
 
@@ -130,7 +130,6 @@ var generate = function()
 
 			_.each(media, function(media){
 
-				$('#tweet-generated-tweet').attr('disabled','disabled').addClass('disabled');
 				if (media.indexOf("svg ") === 1)
 				{
 					var actualSVG = media.substr(5,media.length - 6);
@@ -278,7 +277,7 @@ $('#tweet-generated-tweet').click(function()
 	$.ajax({
 	  url: "tweet.php",
 	  method : "POST",
-	  data : {"tweet": $('#generated-tweet').text()},
+	  data : {"tweet": tweet},
 	  dataType: "json"	  
 	})
 	  .done(function( data ) {

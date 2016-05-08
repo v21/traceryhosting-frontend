@@ -1,7 +1,7 @@
 <?php
 
 
-header('Content-Type: application/json');
+//header('Content-Type: application/json');
 
 require "twitteroauth/autoload.php";
 require "credentials.php";
@@ -34,16 +34,52 @@ if (isset($_SESSION['oauth_token']))
 		$stmt->execute(array('user_id' => $_SESSION['user_id']));
 		$result = $stmt->fetch(PDO::FETCH_ASSOC); 
 
+		$descriptorspec = array(
+		   0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+		   1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+		   //2 => array("file", "/tmp/error-output.txt", "a") // stderr is a file to write to
+		);
 
-		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $result['token'], $result['token_secret']);
+		$cwd = '/tmp';
+		$env = array('TWITTER_CONSUMER_KEY' => CONSUMER_KEY,
+					 'TWITTER_CONSUMER_SECRET' => CONSUMER_SECRET,
+					 'ACCESS_TOKEN' => $result['token'],
+					 'ACCESS_TOKEN_SECRET' =>  $result['token_secret']);
 
-		$tweet_result = $connection->post("statuses/update", array("status" => $_POST['tweet']));
 
-		if ($connection->getLastHttpCode() == 200) {
-		    die ("{\"success\": true}");
-		} else {
-			die ("{\"success\": false, \"reason\" : \"" . $connection->getLastHttpCode() . "\"}");
+		$process = proc_open("/home/v21/.nvm/versions/node/v5.5.0/bin/node /home/v21/bots/send_tweet/send_tweet.js", $descriptorspec, $pipes, $cwd, $env);
+
+		if (is_resource($process)) {
+		    // $pipes now looks like this:
+		    // 0 => writeable handle connected to child stdin
+		    // 1 => readable handle connected to child stdout
+		    // Any error output will be appended to /tmp/error-output.txt
+
+		    fwrite($pipes[0], $_POST['tweet']);
+		    fclose($pipes[0]);
+
+		    $result = stream_get_contents($pipes[1]);
+		    fclose($pipes[1]);
+
+		    // It is important that you close any pipes before calling
+		    // proc_close in order to avoid a deadlock
+		    $return_value = proc_close($process);
+
+		    if ($return_value === 0)
+		    {
+		    	die ("{\"success\": true}");
+		    }
+		    else
+		    {
+		    	die ("{\"success\": false, \"reason\" : " . json_encode($result) . "}");
+		    }
 		}
+		else
+		{
+			die ("{\"success\": false, \"reason\" : \"can't find node\"}");
+		}
+
+
 
 	}
 	catch(PDOException $e)
