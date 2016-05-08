@@ -30,6 +30,7 @@ $(window).bind('beforeunload', function(e){
 });
 
 
+
 $(window).load(function() {
 	if (tracery.createGrammar)
 	{
@@ -297,9 +298,25 @@ $('#tweet-generated-tweet').click(function()
 });
 
 
+$(window).bind('keydown', function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's':
+            event.preventDefault();
+            save();
+            break;
+        }
+    }
+});
+
 
 $( "#tracery-form" ).submit(function( event ) {
   event.preventDefault();
+  save();
+});
+
+var save = function()
+{
   if (valid)
   {
 	var freq = $('#frequency').val();
@@ -327,7 +344,7 @@ $( "#tracery-form" ).submit(function( event ) {
 		});
 	
   }
-});
+}
 
 $(document).delegate('#tracery', 'keydown', function(e) {
   var keyCode = e.keyCode || e.which;
