@@ -7,7 +7,12 @@ require "credentials.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 
-define('OAUTH_CALLBACK', "http://cheapbotsdonequick.com/callback.php");
+$host  = $_SERVER['HTTP_HOST'];
+$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+$extra = 'callback.php';
+header("Location: http://$host$uri/$extra");
+
+define('OAUTH_CALLBACK', "http://$host$uri/$extra");
 
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 session_set_cookie_params(2678000);

@@ -93,7 +93,9 @@ if (!(isset($user_data) || !(isset($user_data->profile_image_url))))
   login_failure(); 
 }
 
-header('Location: http://cheapbotsdonequick.com');
+$host  = $_SERVER['HTTP_HOST'];
+$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+header("Location: http://$host$uri");
 die();
 
 

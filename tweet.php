@@ -61,7 +61,7 @@ if (isset($_SESSION['oauth_token']))
 					 'ACCESS_TOKEN_SECRET' =>  $result['token_secret']);
 
 
-		$process = proc_open("/home/v21/.nvm/versions/node/v5.5.0/bin/node /home/v21/bots/send_tweet/send_tweet.js", $descriptorspec, $pipes, $cwd, $env);
+		$process = proc_open(NODE_PATH . " " . SENDTWEET_PATH, $descriptorspec, $pipes, $cwd, $env);
 
 		if (is_resource($process)) {
 		    // $pipes now looks like this:
