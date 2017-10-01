@@ -1,4 +1,8 @@
-db : traceryhosting
+
+
+CREATE DATABASE `traceryhosting` DEFAULT CHARSET=utf8mb4 ;
+USE traceryhosting;
+GRANT ALL PRIVILEGES ON traceryhosting.* TO 'tracery_php'@'localhost' IDENTIFIED BY 'tracery_test';
 
 CREATE TABLE `traceries` (
   `token` varchar(64) NOT NULL,
@@ -12,4 +16,4 @@ CREATE TABLE `traceries` (
   `does_replies` tinyint(1) DEFAULT '0',
   `reply_rules` mediumtext,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 |
+) ;
