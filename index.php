@@ -46,6 +46,7 @@ session_start();
         <link rel="stylesheet" href="css/main.css">
 		<link href='http://fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="js/underscore-min.js"></script>
     </head>
     <body>
 
@@ -149,7 +150,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
     <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
         <br>
         <div class="row">
-		  <div class="col-md-6 col-md-offset-3">
+		  <div class="col-md-8 col-md-offset-2">
           <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>, and hashtags with <code>\\#</code>.</p>
           <p>SVG files can now be attached to tweets - see for example <a href="http://cheapbotsdonequick.com/source/hashfacade">@hashfacade</a>. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. Note: this feature is still in development, so the tweet button on this page will not work. And the debugging info is better in FF than other browsers.</p>
           <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="http://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
@@ -224,6 +225,71 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
     <br>
 
     <div class="form-group">
+          <select class="form-control" id="does_replies" name="does_replies">
+          <?php 
+            $replypossibilities = array(1 => "Reply", 0 => "Don't reply");
+
+            foreach ($replypossibilities as $replyvalue => $replylabel) {
+              echo('<option value="' . $replyvalue . '" '. ($result['does_replies'] == $replyvalue ? 'selected' : '') .'>' . $replylabel . '</option>');
+            }
+          ?> 
+          </select> to tweets sent to <?php echo('<a class="username" href="http://twitter.com/' . $result['screen_name']. '">') ?>
+          <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
+          <span class="username-text"><?php echo($result['screen_name']) ?></span>
+          </a> (BETA).
+
+        </div>
+
+
+</div>
+    <div id="reply_rules_container" name = "reply_rules_container" class="form-group <?php echo(($result['does_replies'] ? "": "hidden")) ?>">
+<div class="row">
+      <div class="col-md-7 col-md-offset-3">
+      <br>
+          <p>This is also in <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> format. When a mention is received, it's checked against the keys (the left hand part) for a match. The keys are specified with <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions">RegExp syntax</a> - this also straightforwardly matches any letters (as long as there's no punctuation). If you want to catch all replies, use <code>"."</code>. The value (the right hand part) is used as the Tracery syntax for the reply - this can be plain text or a symbol such as <code>"#origin#"</code>. Mentions are checked every 5 minutes, and have a 5% chance of being ignored (to prevent bots from responding to each other forever).</p> 
+      </div>
+      </div>
+
+            <div class="row">
+    <div class="col-md-11 col-md-offset-1">
+
+    <div class="form-group">
+        <textarea class="form-control" rows="7" id="reply_rules" name="reply_rules">
+<?php 
+        if (is_null($result['reply_rules']))
+        {
+          echo('{
+	"hello":"hello there!",
+	".":"#origin#"
+}
+');
+        }
+        else
+        {
+          echo(htmlspecialchars($result['reply_rules'], 'ENT_HTML5' | ENT_QUOTES , "UTF-8")); 
+        }
+?>
+
+
+</textarea>
+</div>
+    <div id="replyrules-validator" class="alert alert-danger hidden" role="alert">Parsing error</div>
+      Test mention: <textarea class="form-control" rows="1" id="test_mention" name="test_mention">@<?php echo($result['screen_name']) ?> </textarea>
+      <div class="pull-right pad-left"><br>
+    <button type="button" id="refresh-generated-reply" class="btn btn-default"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+      </div>
+      Response:<div id="generated-reply" style="overflow: auto;" class="well well-sm">-----
+        <div id="reply-media"> 
+        </div>
+      </div>
+      
+   </div>
+  </div>
+</div>
+    <div class="form-inline">
+
+
+    <div class="form-group">
           <select class="form-control" id="public_source" name="public_source">
           <?php 
             $sharepossibilities = array(1 => "Share", 0 => "Don't share");
@@ -266,7 +332,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <script src="js/json2.js"></script>
         <script src="js/jsonlint.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/underscore-min.js"></script>
+        <script type="text/javascript">var screen_name = "<?php echo($result['screen_name'])?>"</script>
     </body>
 </html>
 

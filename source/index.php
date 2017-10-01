@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="/css/main.css">
     <link href='http://fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="/js/underscore-min.js"></script>
     </head>
     <body>
     
@@ -61,14 +62,26 @@ $stmt = $pdo->prepare('SELECT * FROM traceries WHERE screen_name = :screen_name'
 $stmt->execute(array('screen_name' => $screen_name));
 $result = $stmt->fetch(PDO::FETCH_ASSOC); 
 
-if ($result['public_source'] != true)
+if ($screen_name === "")
 {
   ?>
   <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
         <br>
         <div class="row">
       <div class="col-md-6 col-md-offset-3">
-      <p>Could not find Tracery source for <?php echo($screen_name) ?></p>
+      <p>Go to /source/<code>botname</code> to view the source for that bot (if available).</p>
+      </div>
+    </div>
+    <?php
+}
+elseif ($result['public_source'] != true)
+{
+  ?>
+  <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
+        <br>
+        <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+      <p>Could not find Tracery source for <b><?php echo($screen_name) ?></b> - that Twitter account may not exist, may not use CBDQ, or may not have chosen to share their source.</p>
       </div>
     </div>
     <?php
@@ -88,7 +101,7 @@ else
           <?php 
           $frequencypossibilities = array(-1 => "never", 10 => "every 10 minutes", 30 => "every half hour", 60 => "every hour", 180 => "every 3 hours", 360 => "every 6 hours", 720 => "twice a day", 1440 => "once a day", 10080 => "once a week", 43829 => "once a month", 525949 => "once a year", 42 => "when run manually");
           echo($frequencypossibilities[$result['frequency']]);
-        ?>.</p>
+        ?><?php echo($result['does_replies'] === "1"? " and replies to mentions":"")?>.</p>
         <p>You can make your own bot, if you like. It's free and requires no specialized knowledge. To start, sign in with twitter <a href="/">here</a>.
       </div>
     </div>
@@ -133,6 +146,27 @@ else
        
 </div>
 
+<?php 
+if ($result['does_replies'] === "1") 
+{
+  ?>
+    <div id="reply_rules_container" name = "reply_rules_container" class="form-group <?php echo(($result['does_replies'] ? "": "hidden")) ?>">
+        
+        <textarea class="form-control expanding" rows="7" id="reply_rules" name="reply_rules">
+<?php 
+        
+          echo(htmlspecialchars($result['reply_rules'], 'ENT_HTML5' | ENT_QUOTES , "UTF-8")); 
+        
+?>
+
+</textarea>
+    </div>
+    <div id="replyrules-validator" class="alert alert-danger hidden" role="alert">Parsing error</div>
+
+<?php 
+}
+?>
+
 </form>
 
 
@@ -169,7 +203,7 @@ else
         <script src="/js/json2.js"></script>
         <script src="/js/jsonlint.js"></script>
         <script src="/js/main.js"></script>
-        <script src="/js/underscore-min.js"></script>
+        <script type="text/javascript">var screen_name = "<?php echo($result['screen_name'])?>"</script>
     </body>
 </html>
 

@@ -1,9 +1,15 @@
 db : traceryhosting
 
-CREATE TABLE traceries (
-    token VARCHAR(64) NOT NULL ,
-    token_secret VARCHAR(64),
-    screen_name VARCHAR(15),
-    frequency INT(12),
-    tracery TEXT,
-    primary KEY (token));
+CREATE TABLE `traceries` (
+  `token` varchar(64) NOT NULL,
+  `token_secret` varchar(64) DEFAULT NULL,
+  `screen_name` varchar(15) DEFAULT NULL,
+  `frequency` int(12) DEFAULT NULL,
+  `tracery` mediumtext,
+  `user_id` varchar(64) NOT NULL DEFAULT '',
+  `public_source` tinyint(1) DEFAULT NULL,
+  `blocked_status` smallint(6) DEFAULT NULL,
+  `does_replies` tinyint(1) DEFAULT '0',
+  `reply_rules` mediumtext,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 |

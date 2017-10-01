@@ -1,9 +1,5 @@
 $('#tracery').bind('input propertychange', function() {
 	generate();
-	if (generateTime < 1100)
-	{
-		_.throttle(generate, generateTime, {leading: false});
-	}
 	unsaved = true;
 	changeSaveButtonColour();
 });
@@ -18,6 +14,54 @@ $('#public_source').change(function() {
 	unsaved = true;
 	changeSaveButtonColour();
 });
+
+
+$('#does_replies').change(function() {
+	unsaved = true;
+	changeSaveButtonColour();
+
+	console.log($('#does_replies').val() );
+	if ($('#does_replies').val() == 0)
+	{
+		$('#reply_rules_container').addClass('hidden');
+		$("#reply_rules").expanding('destroy');
+		$("#test_mention").expanding('destroy');
+	}
+	else
+	{
+		$('#reply_rules_container').removeClass('hidden');
+		$("#reply_rules").expanding();
+		$("#test_mention").expanding();
+
+		generate_reply();
+	}
+});
+
+if ($("#reply_rules").is(":visible"))
+{
+	$("#reply_rules").expanding();
+	$("#test_mention").expanding();
+}
+
+
+$('#reply_rules').bind('input propertychange', function() {
+	unsaved = true;
+	changeSaveButtonColour();
+
+	generate_reply();
+});
+
+
+
+$('#test_mention').bind('input propertychange', function() {
+
+	generate_reply();
+});
+
+$( "#refresh-generated-reply" ).bind( "click", function() {
+  generate_reply();
+});
+
 
 
 $( "#refresh-generated-tweet" ).bind( "click", function() {
@@ -44,6 +88,7 @@ $(window).load(function() {
 });
 
 var valid = true;
+var replyrules_valid = true;
 
 nl2br = function (str, is_xhtml) {   
 	var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';    
@@ -73,7 +118,7 @@ var matchBrackets = function(text) {
   else {
     return matches.map(reverseString).reverse();
   }
-}
+};
 
 
 //see matchBrackets for why this is like this
@@ -92,10 +137,148 @@ function removeBrackets (text) {
 }
 
 
+var validate_reply_rules = function()
+{
+	var string = $('textarea#reply_rules').val();
+	try
+	{
+		var parsed = jQuery.parseJSON(string); 
+
+		var regexes_valid = _.all(parsed, function(val, key, index)
+		{
+			try
+			{
+				var regex = new RegExp(key);
+				return true;
+			}
+			catch (e)
+			{
+				$('#replyrules-validator').removeClass('hidden').html("RegExp parse error for rule " + key + ":  <pre>" + _.escape(e) + "</pre>");
+				return false;
+			}
+		})
+
+		if (regexes_valid)
+		{
+			$('#replyrules-validator').addClass('hidden').text("Parsed successfully");
+			replyrules_valid = true;
+		}
+		else
+		{
+			replyrules_valid = true;
+		}
+
+	}
+	catch (e) {
+
+
+		try {
+			var result = jsonlint.parse(string);
+			if (result) {
+				//valid via jsonlint?!
+				$('#replyrules-validator').removeClass('hidden').text("Unknown JSON parse error: " + _.escape(e));
+			}
+		} catch(e) {
+			$('#replyrules-validator').removeClass('hidden').html("JSON parse error:  <pre>" + _.escape(e) + "</pre>");
+		}
+
+		replyrules_valid = false;
+	}
+
+
+	$('#save-button').toggleClass('disabled', !(valid && replyrules_valid));
+};
+
+var generate_reply = function()
+{
+	validate_reply_rules();
+	if (replyrules_valid && processedGrammar != null)
+	{
+		var mention = $('textarea#test_mention').val();
+
+		if (mention.indexOf("@" + screen_name) == -1) //if we're not @ed
+		{
+			$('#generated-reply').html("<i>Not mentioned</i>" + "<div id=\"reply-media\"></div>");
+		}
+		else
+		{
+			var reply_rules = jQuery.parseJSON($('textarea#reply_rules').val()); //could be quicker if we only parse this once
+			var origin = _.find(reply_rules, function(origin,rule) {
+				return (new RegExp(rule)).test(mention);
+			});
+			var reply = processedGrammar.flatten(origin);
+
+
+
+			var media = matchBrackets(reply);
+			var just_text_tweet = removeBrackets(reply);
+
+			if (reply == "")
+			{
+				$('#generated-reply').html("<i>No reply</i>" + "<div id=\"reply-media\"></div>");
+			}
+			else
+			{
+				$('#generated-reply').html(nl2br(_.escape(just_text_tweet)) + "<div id=\"reply-media\"></div>");
+			}
+
+
+			if (twttr.txt.getTweetLength(just_text_tweet) > 140)
+			{
+				$('#generated-reply').addClass('too-long');
+			}
+			else
+			{
+				$('#generated-reply').removeClass('too-long');
+			}
+
+
+			_.each(media, function(media){
+
+				var unescapeOpenBracket = /\\{/g;
+				var unescapeCloseBracket = /\\}/g;
+				media = media.replace(unescapeOpenBracket, "{");
+				media = media.replace(unescapeCloseBracket, "}");
+
+				if (media.indexOf("svg ") === 1)
+				{
+					var actualSVG = media.substr(5,media.length - 6);
+
+					var parser = new DOMParser();
+					var doc = parser.parseFromString(actualSVG, "image/svg+xml");
+					
+
+				    validateSVG(doc, actualSVG);
+
+
+					$('#reply-media').append("<div class=\"svg-media\">" + actualSVG + "</div>");
+				}
+				else if (media.indexOf("img ") === 1)
+				{
+					fetch_img, media.substr(5)
+				}
+				else
+				{
+					$('#replyrules-validator').removeClass('hidden').text("Unknown media type " + media.substr(1,4));
+				}
+			});
+		}
+
+	}
+	else
+	{
+		$('#generated-reply').html("---").attr('disabled','disabled').addClass('disabled');
+	}
+};
+
+generate_reply = _.throttle(generate_reply, 500);
+
+
 var tweet; //global so we can see it when we press the tweet button
+var processedGrammar; //global so it can be used for replies
 var generate = function()
 {
-	var startGenerate = _.now();
+	processedGrammar = null;
 	var string = $('textarea#tracery').val();
 	try{
 		var parsed = jQuery.parseJSON(string);
@@ -105,14 +288,12 @@ var generate = function()
 			$('#tracery-validator').addClass('hidden').text("Parsed successfully");
 
 
-			var processedGrammar = tracery.createGrammar(parsed);
+			processedGrammar = tracery.createGrammar(parsed);
 
 			processedGrammar.addModifiers(tracery.baseEngModifiers);
 			tweet = processedGrammar.flatten("#origin#");
+
 			var media = matchBrackets(tweet);
-
-
-			
 			var just_text_tweet = removeBrackets(tweet);
 			$('#generated-tweet').html(nl2br(_.escape(just_text_tweet)) + "<div id=\"tweet-media\"></div>");
 
@@ -130,6 +311,11 @@ var generate = function()
  
 
 			_.each(media, function(media){
+
+				var unescapeOpenBracket = /\\{/g;
+				var unescapeCloseBracket = /\\}/g;
+				media = media.replace(unescapeOpenBracket, "{");
+				media = media.replace(unescapeCloseBracket, "}");
 
 				if (media.indexOf("svg ") === 1)
 				{
@@ -182,10 +368,16 @@ var generate = function()
 		valid = false;
 	}
 
-	$('#save-button').toggleClass('disabled', !valid);
-	generateTime = _.now() - startGenerate + 100;
+	$('#save-button').toggleClass('disabled', !(valid && replyrules_valid));
+
+	if ($("#reply_rules").is(":visible"))
+	{
+		generate_reply();
+	} 
 };
-var generateTime = 100;
+
+generate = _.throttle(generate, 500);
+
 var unsaved = false;
 
 $( window ).unload(function() {
@@ -317,15 +509,17 @@ $( "#tracery-form" ).submit(function( event ) {
 
 var save = function()
 {
-  if (valid)
+  if (valid && replyrules_valid)
   {
 	var freq = $('#frequency').val();
 	var tracery = $('#tracery').val();
 	var public_source = $('#public_source').val();
+	var does_replies = $('#does_replies').val();
+	var reply_rules = $('#reply_rules').val();
 	$.ajax({
 	  url: "update.php",
 	  method : "POST",
-	  data : {"frequency": freq , "tracery" : tracery, "public_source" : public_source},
+	  data : {"frequency": freq , "tracery" : tracery, "public_source" : public_source, "does_replies" : does_replies, "reply_rules" : reply_rules},
 	  dataType: "json"
 	})
 	  .done(function( data ) {
@@ -364,4 +558,25 @@ $(document).delegate('#tracery', 'keydown', function(e) {
 	$(this).get(0).selectionEnd = start + 1;
   }
 });
+
+
+$(document).delegate('#reply_rules', 'keydown', function(e) {
+  var keyCode = e.keyCode || e.which;
+
+  if (keyCode == 9) {
+	e.preventDefault();
+	var start = $(this).get(0).selectionStart;
+	var end = $(this).get(0).selectionEnd;
+
+	// set textarea value to: text before caret + tab + text after caret
+	$(this).val($(this).val().substring(0, start)
+				+ "\t"
+				+ $(this).val().substring(end));
+
+	// put caret at right position again
+	$(this).get(0).selectionStart =
+	$(this).get(0).selectionEnd = start + 1;
+  }
+});
+
 
