@@ -17,5 +17,7 @@ CREATE TABLE `traceries` (
   `blocked_status` smallint(6) DEFAULT NULL,
   `does_replies` tinyint(1) DEFAULT '0',
   `reply_rules` mediumtext,
+  `created_on` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`)
 ) ;
