@@ -6,13 +6,21 @@ require "credentials.php";
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 
-
+if (isset($_SERVER['HTTPS']) &&
+    ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+    isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+  $protocol = 'https://';
+}
+else {
+  $protocol = 'http://';
+}
 $host  = $_SERVER['HTTP_HOST'];
 $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 $extra = 'callback.php';
-header("Location: http://$host$uri/$extra");
+header("Location: $protocol$host$uri/$extra");
 
-define('OAUTH_CALLBACK', "http://$host$uri/$extra");
+define('OAUTH_CALLBACK', "$protocol$host$uri/$extra");
 
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 session_set_cookie_params(2678000);

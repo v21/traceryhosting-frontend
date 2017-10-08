@@ -30,7 +30,7 @@ function login_failure()
     }
 
     session_destroy();
-    die('Error! Couldn\'t log in. <a href="http://cheapbotsdonequick.com">Retry</a>');
+    die('Error! Couldn\'t log in. <a href="//cheapbotsdonequick.com">Retry</a>');
 }
 
 
@@ -92,10 +92,18 @@ if (!(isset($user_data) || !(isset($user_data->profile_image_url))))
 {
   login_failure(); 
 }
-
+if (isset($_SERVER['HTTPS']) &&
+    ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+    isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+  $protocol = 'https://';
+}
+else {
+  $protocol = 'http://';
+}
 $host  = $_SERVER['HTTP_HOST'];
 $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-header("Location: http://$host$uri");
+header("Location: $protocol$host$uri");
 die();
 
 
