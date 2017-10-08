@@ -102,7 +102,7 @@ if (!$include_inactive)
 }
 ?>
 <table class="admintable sortable">
-  <tr><th>freq</th> <th>screen_name</th> <th>user_id</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
+  <tr><th>freq</th> <th>screen_name</th> <th class="sorttable_numeric">user_id</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
 <?php
   foreach ($results as $key => $value) {
     $public_source = $value['public_source'] == 0 ? "no" : "yes";
