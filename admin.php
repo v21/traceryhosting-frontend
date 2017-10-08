@@ -61,6 +61,8 @@ if ($include_inactive)
   screen_name, 
   user_id,
   frequency, 
+  last_updated,
+  created_on,
   blocked_status, 
   public_source, 
   does_replies, 
@@ -74,6 +76,8 @@ else
   screen_name, 
   user_id,
   frequency, 
+  last_updated,
+  created_on,
   blocked_status, 
   public_source, 
   does_replies, 
@@ -102,7 +106,7 @@ if (!$include_inactive)
 }
 ?>
 <table class="admintable sortable">
-  <tr><th>freq</th> <th>screen_name</th> <th class="sorttable_numeric">user_id</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
+  <tr><th>freq</th> <th>screen_name</th> <th class="sorttable_numeric">user_id</th> <th>created</th> <th>updated</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
 <?php
   foreach ($results as $key => $value) {
     $public_source = $value['public_source'] == 0 ? "no" : "yes";
@@ -112,6 +116,8 @@ if (!$include_inactive)
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\" target=\"_blank\">{$value['screen_name']}</a></td>
       <td>{$value['user_id']}</a></td>
+      <td>{$value['created_on']}</td>
+      <td>{$value['last_updated']}</td>
       <td>{$value['tracery_size']}</td>
       <td>{$svg}</td>
       <td>{$value['blocked_status']}</td>
