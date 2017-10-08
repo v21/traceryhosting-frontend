@@ -36,7 +36,7 @@ if (isset($_SESSION['oauth_token']))
 
 	  	if ($stmt->rowCount() == 1)
 	  	{
-	  		mail("vtwentyone+php@gmail.com", "Bot update: " . $_SESSION['screen_name'] . " every " . $_POST['frequency'] . " minutes" . ($_POST['does_replies'] == "1"? " and replies" : ""), $_POST['tracery'] . ($_POST['does_replies'] == "1"? "\n\n replies:" . $_POST['reply_rules'] : ""));
+	  		mail(NOTIFICATION_EMAIL, "Bot update: " . $_SESSION['screen_name'] . " every " . $_POST['frequency'] . " minutes" . ($_POST['does_replies'] == "1"? " and replies" : ""), $_POST['tracery'] . ($_POST['does_replies'] == "1"? "\n\n replies:" . $_POST['reply_rules'] : ""));
 			die ("{\"success\": true}");
 	  	}
 	  	else
