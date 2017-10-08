@@ -110,7 +110,7 @@ if (!$include_inactive)
     $svg = $value['svg'] == 0 ? "no" : "yes";
     echo("<tr>
       <td>{$value['frequency']}</td>
-      <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\">{$value['screen_name']}</a></td>
+      <td><a href=\"admin_single.php?screen_name={$value['screen_name']} target=\"_blank\"\">{$value['screen_name']}</a></td>
       <td>{$value['user_id']}</a></td>
       <td>{$value['tracery_size']}</td>
       <td>{$svg}</td>
