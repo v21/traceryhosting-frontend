@@ -68,7 +68,8 @@ if ($include_inactive)
   does_replies, 
   CHAR_LENGTH(tracery) as "tracery_size", 
   tracery LIKE "%{svg %" as "svg"
-  FROM traceries');
+  FROM traceries
+  ORDER BY last_updated DESC');
 }
 else
 {
@@ -84,7 +85,8 @@ else
   CHAR_LENGTH(tracery) as "tracery_size", 
   tracery LIKE "%{svg %" as "svg"
   FROM traceries
-  WHERE frequency > 0');
+  WHERE frequency > 0
+  ORDER BY last_updated DESC');
 }
 
 
