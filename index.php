@@ -44,7 +44,7 @@ session_start();
         </style>
         <!--<link rel="stylesheet" href="css/bootstrap-theme.min.css">-->
         <link rel="stylesheet" href="css/main.css">
-		<link href='http://fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
+		<link href='//fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <script src="js/underscore-min.js"></script>
     </head>
@@ -66,7 +66,7 @@ if (!isset($_SESSION['user_id']))
       </p>
 
 		  <p>To use it, <a href="https://twitter.com/signup">create a Twitter account</a> for your bot to run under and then sign in below. 
-		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="http://v21.io">George Buckenham</a> - he can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>.</p>
+		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="https://v21.io">George Buckenham</a> - he can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>.</p>
 		  </p>
 		  </div>
 		</div>
@@ -83,17 +83,17 @@ if (!isset($_SESSION['user_id']))
           <div class="col-md-6 col-md-offset-3">
           Some examples of twitterbots made with this site:
           <ul id="shuffle">
-          <li><a href="https://twitter.com/hashfacade">@hashfacade</a> <a href="http://cheapbotsdonequick.com/source/hashfacade">(source)</a></li>
-          <li><a href="https://twitter.com/gnuerror">@gnuerror</a> <a href="http://cheapbotsdonequick.com/source/gnuerror">(source)</a></li>
-          <li><a href="https://twitter.com/unicode_garden">@unicode_garden</a> <a href="http://cheapbotsdonequick.com/source/unicode_garden">(source)</a></li>
-          <li><a href="https://twitter.com/softlandscapes">@softlandscapes</a> <a href="http://cheapbotsdonequick.com/source/softlandscapes">(source)</a></li>
-          <li><a href="https://twitter.com/thetinygallery">@thetinygallery</a> <a href="http://cheapbotsdonequick.com/source/thetinygallery">(source)</a></li>
-          <li><a href="https://twitter.com/bot_teleport">@bot_teleport</a> <a href="http://cheapbotsdonequick.com/source/bot_teleport">(source)</a></li>
-          <li><a href="https://twitter.com/autoflaneur">@autoflaneur</a> <a href="http://cheapbotsdonequick.com/source/autoflaneur">(source)</a></li>
-          <li><a href="https://twitter.com/lotsofeyes">@lotsofeyes</a> <a href="http://cheapbotsdonequick.com/source/lotsofeyes">(source)</a></li>
+          <li><a href="https://twitter.com/hashfacade">@hashfacade</a> <a href="//cheapbotsdonequick.com/source/hashfacade">(source)</a></li>
+          <li><a href="https://twitter.com/gnuerror">@gnuerror</a> <a href="//cheapbotsdonequick.com/source/gnuerror">(source)</a></li>
+          <li><a href="https://twitter.com/unicode_garden">@unicode_garden</a> <a href="//cheapbotsdonequick.com/source/unicode_garden">(source)</a></li>
+          <li><a href="https://twitter.com/softlandscapes">@softlandscapes</a> <a href="//cheapbotsdonequick.com/source/softlandscapes">(source)</a></li>
+          <li><a href="https://twitter.com/thetinygallery">@thetinygallery</a> <a href="//cheapbotsdonequick.com/source/thetinygallery">(source)</a></li>
+          <li><a href="https://twitter.com/bot_teleport">@bot_teleport</a> <a href="//cheapbotsdonequick.com/source/bot_teleport">(source)</a></li>
+          <li><a href="https://twitter.com/autoflaneur">@autoflaneur</a> <a href="//cheapbotsdonequick.com/source/autoflaneur">(source)</a></li>
+          <li><a href="https://twitter.com/lotsofeyes">@lotsofeyes</a> <a href="//cheapbotsdonequick.com/source/lotsofeyes">(source)</a></li>
           <li><a href="https://twitter.com/thinkpiecebot">@thinkpiecebot</a></li>
           <li><a href="https://twitter.com/infinitedeserts">@infinitedeserts</a></li>
-          <li><a href="https://twitter.com/FoleyArtists">@FoleyArtists</a> <a href="http://cheapbotsdonequick.com/source/FoleyArtists">(source)</a></li>
+          <li><a href="https://twitter.com/FoleyArtists">@FoleyArtists</a> <a href="//cheapbotsdonequick.com/source/FoleyArtists">(source)</a></li>
           <li><a href="https://twitter.com/What_Hastings">@What_Hastings</a></li>
           <li><a href="https://twitter.com/petitsmotifs">@petitsmotifs</a></li>
           <!--<li><a href="https://twitter.com/AbhorrentSexBot">@AbhorrentSexBot</a></li>-->
@@ -152,8 +152,8 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="row">
 		  <div class="col-md-8 col-md-offset-2">
           <p>Bots are written in <a href="http://brightspiral.com/">Tracery</a>, a generative grammar specified as a <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> string. This site will automatically expand your text, starting from the "origin" node, and then tweet it on a fixed schedule. If it generates a duplicate tweet, or a tweet over 140 characters, it will retry up to 5 times. Line breaks can be entered with the special sequence <code>\n</code>, and hashtags with <code>\\#</code>.</p>
-          <p>SVG files can now be attached to tweets - see for example <a href="http://cheapbotsdonequick.com/source/hashfacade">@hashfacade</a>. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. Note: this feature is still in development, so the tweet button on this page will not work. And the debugging info is better in FF than other browsers.</p>
-          <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="http://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
+          <p>SVG files can now be attached to tweets - see for example <a href="//cheapbotsdonequick.com/source/hashfacade">@hashfacade</a>. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. Note: this feature is still in development, so the tweet button on this page will not work. And the debugging info is better in FF than other browsers.</p>
+          <p>I make no guarantees about the reliability or privacy of this service. If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. Any questions, bug reports or comments, you can reach me at <a href="https://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
 		  <ul>
 		  <li><a href="http://www.crystalcodepalace.com/traceryTut.html">Tracery tutorial</a></li>
 		  <li><a href="http://www.brightspiral.com/tracery/">Tracery visual editor</a></li>
@@ -217,7 +217,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <div class="form-group">
-        post a tweet as <?php echo('<a class="username" href="http://twitter.com/' . $result['screen_name']. '">') ?>
+        post a tweet as <?php echo('<a class="username" href="https://twitter.com/' . $result['screen_name']. '">') ?>
 	        <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
 	        <span class="username-text"><?php echo($result['screen_name']) ?></span>
 	        </a>
@@ -233,7 +233,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
               echo('<option value="' . $replyvalue . '" '. ($result['does_replies'] == $replyvalue ? 'selected' : '') .'>' . $replylabel . '</option>');
             }
           ?> 
-          </select> to tweets sent to <?php echo('<a class="username" href="http://twitter.com/' . $result['screen_name']. '">') ?>
+          </select> to tweets sent to <?php echo('<a class="username" href="https://twitter.com/' . $result['screen_name']. '">') ?>
           <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
           <span class="username-text"><?php echo($result['screen_name']) ?></span>
           </a> (BETA).
@@ -246,7 +246,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 <div class="row">
       <div class="col-md-7 col-md-offset-3">
       <br>
-          <p>This is also in <a href="http://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> format. When a mention is received, it's checked against the keys (the left hand part) for a match. The keys are specified with <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions">RegExp syntax</a> - this also straightforwardly matches any letters (as long as there's no punctuation). If you want to catch all replies, use <code>"."</code>. The value (the right hand part) is used as the Tracery syntax for the reply - this can be plain text or a symbol such as <code>"#origin#"</code>. Mentions are checked every 5 minutes, and have a 5% chance of being ignored (to prevent bots from responding to each other forever).</p> 
+          <p>This is also in <a href="https://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> format. When a mention is received, it's checked against the keys (the left hand part) for a match. The keys are specified with <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions">RegExp syntax</a> - this also straightforwardly matches any letters (as long as there's no punctuation). If you want to catch all replies, use <code>"."</code>. The value (the right hand part) is used as the Tracery syntax for the reply - this can be plain text or a symbol such as <code>"#origin#"</code>. Mentions are checked every 5 minutes, and have a 5% chance of being ignored (to prevent bots from responding to each other forever).</p> 
       </div>
       </div>
 

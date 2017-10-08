@@ -20,7 +20,7 @@
         </style>
         <!--<link rel="stylesheet" href="css/bootstrap-theme.min.css">-->
         <link rel="stylesheet" href="/css/main.css">
-    <link href='http://fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <script src="/js/underscore-min.js"></script>
     </head>
@@ -97,7 +97,7 @@ else
         <br>
         <div class="row">
       <div class="col-md-6 col-md-offset-3">
-          <p>This is the <a href="https://github.com/galaxykate/tracery">Tracery</a> source for the bot running at <?php echo('<a href="http://twitter.com/' . $result['screen_name']. '">') ?>@<?php echo($result['screen_name']) ?></a>. It currently tweets 
+          <p>This is the <a href="https://github.com/galaxykate/tracery">Tracery</a> source for the bot running at <?php echo('<a href="https://twitter.com/' . $result['screen_name']. '">') ?>@<?php echo($result['screen_name']) ?></a>. It currently tweets 
           <?php 
           $frequencypossibilities = array(-1 => "never", 10 => "every 10 minutes", 30 => "every half hour", 60 => "every hour", 180 => "every 3 hours", 360 => "every 6 hours", 720 => "twice a day", 1440 => "once a day", 10080 => "once a week", 43829 => "once a month", 525949 => "once a year", 42 => "when run manually");
           echo($frequencypossibilities[$result['frequency']]);
@@ -138,7 +138,7 @@ else
     
 
     <div class="form-group">
-        <span style="padding-left:20px">for</span> <?php echo('<a class="username" href="http://twitter.com/' . $result['screen_name']. '">') ?>
+        <span style="padding-left:20px">for</span> <?php echo('<a class="username" href="https://twitter.com/' . $result['screen_name']. '">') ?>
           
           <span class="username-text">@<?php echo($result['screen_name']) ?></span>
           </a>
