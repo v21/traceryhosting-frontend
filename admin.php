@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID)
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Cheap Bots, Done Quick!</title>
+        <title>ADMIN for Cheap Bots, Done Quick!</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -98,7 +98,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
 
 
-<div class="col-md-6 col-md-offset-2">
+<div class="col-md-8 col-md-offset-2">
   <?php
 if (!$include_inactive)
 {
@@ -109,13 +109,13 @@ if (!$include_inactive)
   <tr><th>freq</th> <th>screen_name</th> <th class="sorttable_numeric">user_id</th> <th>created</th> <th>updated</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
 <?php
   foreach ($results as $key => $value) {
-    $public_source = $value['public_source'] == 0 ? "no" : "yes";
+    $public_source = $value['public_source'] == 0 ? "no" : "<a href=\"/source/{$value['screen_name']}\" target=\"_blank\">yes</a>";
     $does_replies = $value['does_replies'] == 0 ? "no" : "yes";
     $svg = $value['svg'] == 0 ? "no" : "yes";
     echo("<tr>
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\" target=\"_blank\">{$value['screen_name']}</a></td>
-      <td>{$value['user_id']}</a></td>
+      <td><a href=\"https://twitter.com/{$value['screen_name']}\" target=\"_blank\">{$value['user_id']}</a></td>
       <td>{$value['created_on']}</td>
       <td>{$value['last_updated']}</td>
       <td>{$value['tracery_size']}</td>
