@@ -36,7 +36,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID)
         </style>
         <!--<link rel="stylesheet" href="css/bootstrap-theme.min.css">-->
         <link rel="stylesheet" href="/css/main.css">
-    <link href='http://fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Yesteryear' rel='stylesheet' type='text/css'>
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <script src="/js/underscore-min.js"></script>
     </head>
@@ -59,6 +59,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 //we've got an account
 $stmt = $pdo->prepare('SELECT 
   screen_name, 
+  user_id,
   frequency, 
   blocked_status, 
   public_source, 
@@ -79,7 +80,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="col-md-6 col-md-offset-2">
 <table class="admintable sortable">
-  <tr><th>freq</th> <th>screen_name</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
+  <tr><th>freq</th> <th>screen_name</th> <th>user_id</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
 <?php
   foreach ($results as $key => $value) {
     $public_source = $value['public_source'] == 0 ? "no" : "yes";
@@ -88,6 +89,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo("<tr>
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\">{$value['screen_name']}</a></td>
+      <td>{$value['user_id']}</a></td>
       <td>{$value['tracery_size']}</td>
       <td>{$svg}</td>
       <td>{$value['blocked_status']}</td>
