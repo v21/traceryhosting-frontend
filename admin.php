@@ -46,8 +46,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID)
 <?php
 
 
-
-
+$include_inactive = isset($_GET["include_inactive"]);
 
 
 $pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD);
@@ -56,8 +55,9 @@ $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-//we've got an account
-$stmt = $pdo->prepare('SELECT 
+if ($include_inactive)
+{
+  $stmt = $pdo->prepare('SELECT 
   screen_name, 
   user_id,
   frequency, 
@@ -67,6 +67,22 @@ $stmt = $pdo->prepare('SELECT
   CHAR_LENGTH(tracery) as "tracery_size", 
   tracery LIKE "%{svg %" as "svg"
   FROM traceries');
+}
+else
+{
+  $stmt = $pdo->prepare('SELECT 
+  screen_name, 
+  user_id,
+  frequency, 
+  blocked_status, 
+  public_source, 
+  does_replies, 
+  CHAR_LENGTH(tracery) as "tracery_size", 
+  tracery LIKE "%{svg %" as "svg"
+  FROM traceries
+  WHERE frequency > 0');
+}
+
 
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC); 
@@ -79,6 +95,12 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 <div class="col-md-6 col-md-offset-2">
+  <?php
+if (!$include_inactive)
+{
+  echo('<a href="?include_inactive=true">(include inactive)</a>');
+}
+?>
 <table class="admintable sortable">
   <tr><th>freq</th> <th>screen_name</th> <th>user_id</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
 <?php
