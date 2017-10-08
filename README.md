@@ -8,3 +8,4 @@ How to get set up developing on CBDQ:
 - add the path to `node` in `credentials.php`
 - if you want the tweet button to work, clone `https://github.com/v21/traceryhosting-send_tweet`, run `npm update` to fetch the dependencies, and add the path to `send_tweet.js` to `credentials.php`
 - you can spin up a dev server with the builtin php server like so: `php -S localhost:8000`
+- now go check out `https://github.com/v21/traceryhosting-backend`!
