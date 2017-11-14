@@ -223,7 +223,7 @@ var generate_reply = function()
 			}
 
 
-			if (twttr.txt.getTweetLength(just_text_tweet) > 140)
+			if (twttr.txt.getTweetLength(just_text_tweet) > 280)
 			{
 				$('#generated-reply').addClass('too-long');
 			}
@@ -297,7 +297,7 @@ var generate = function()
 			var just_text_tweet = removeBrackets(tweet);
 			$('#generated-tweet').html(nl2br(_.escape(just_text_tweet)) + "<div id=\"tweet-media\"></div>");
 
-			if (twttr.txt.getTweetLength(just_text_tweet) > 140)
+			if (twttr.txt.getTweetLength(just_text_tweet) > 280)
 			{
 				$('#generated-tweet').addClass('too-long');
 
