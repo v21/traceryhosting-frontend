@@ -242,7 +242,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
           </select> to tweets sent to <?php echo('<a class="username" href="https://twitter.com/' . $result['screen_name']. '">') ?>
           <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
           <span class="username-text"><?php echo($result['screen_name']) ?></span>
-          </a> (BETA).
+          </a>.
 
         </div>
 
