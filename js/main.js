@@ -255,7 +255,11 @@ var generate_reply = function()
 				}
 				else if (media.indexOf("img ") === 1)
 				{
-					fetch_img, media.substr(5)
+
+					var url = media.substr(5,media.length - 6);
+
+					$('#reply-media').append("<div class=\"svg-media\"> <img src=\"" + url + "\"></div>");
+
 				}
 				else
 				{
@@ -332,7 +336,9 @@ var generate = function()
 				}
 				else if (media.indexOf("img ") === 1)
 				{
-					fetch_img, media.substr(5)
+					var url = media.substr(5,media.length - 6);
+
+					$('#tweet-media').append("<div class=\"svg-media\"> <img src=\"" + url + "\"></div>");
 				}
 				else
 				{
