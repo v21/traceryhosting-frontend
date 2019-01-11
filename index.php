@@ -66,7 +66,7 @@ if (!isset($_SESSION['user_id']))
       </p>
 
 		  <p>To use it, <a href="https://twitter.com/signup">create a Twitter account</a> for your bot to run under and then sign in below. 
-		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="https://v21.io">George Buckenham</a> - he can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>. You can support this site on <a href="https://www.patreon.com/v21">Patreon</a>.</p>
+		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="https://v21.io">George Buckenham</a> - they can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>. You can support this site on <a href="https://www.patreon.com/v21">Patreon</a>.</p>
 		  </p>
 		  </div>
 		</div>
@@ -155,7 +155,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
           <p>You can also include images in your tweets. The simplest way to do this is to specify a URL, like so <code>{img https://placeimg.com/640/480/animals/image.jpg}</code>. Alternatively, to generate an image within CBDQ, you can use <a href="https://developer.mozilla.org/en-US/docs/Web/SVG">SVGs</a>. A good simple example to start from is the source of <a href="//cheapbotsdonequick.com/source/hashfacade">@hashfacade</a>. The syntax looks like this: <code>{svg  &lt;svg ...&gt; ... &lt;/svg&gt;}</code>. SVGs will need to specify a <code>width</code> and <code>height</code> attribute. Note that <code>"</code>s within SVG files need to be escaped as <code>\"</code>, as does <code>#</code>s (<code>\\#</code>). <code>{</code>s and <code>}</code>s can be escaped as <code>\\{</code> and <code>\\}</code>. </p>
 
-          <p>If you create a bot I deem abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. If you have any questions, bug reports or comments then you can reach me at <a href="https://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
+          <p>If you create a bot I deem spammy, abusive or otherwise unpleasant (for example, @mentioning people who have not consented, posting insults or using slurs) I will take it down. If you have any questions, bug reports or comments then you can reach me at <a href="https://twitter.com/v21">@v21</a> or at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a></p>
 		  <ul>
         <li><a href="http://air.decontextualize.com/tracery/">Tracery tutorial</a></li>
   		  <li><a href="http://www.crystalcodepalace.com/traceryTut.html">Interactive tutorial</a></li>
