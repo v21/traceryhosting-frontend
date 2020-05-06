@@ -532,6 +532,7 @@ var save = function()
 		if (data.hasOwnProperty('success') && data['success'])
 		{
 			$('#tracery-validator').addClass('hidden');
+			$('#server-error').addClass('hidden');
 			unsaved = false;
 			changeSaveButtonColour();
 		}
