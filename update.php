@@ -30,7 +30,7 @@ if (isset($_SESSION['oauth_token']))
 	{
 		//todo validate json here
 
-		$stmt = $pdo->prepare('UPDATE traceries SET frequency=:frequency, tracery=:tracery, public_source=:public_source, does_replies=:does_replies, reply_rules=:reply_rules, last_updated=now() WHERE token=:token');
+		$stmt = $pdo->prepare('UPDATE traceries SET frequency=:frequency, tracery=:tracery, public_source=:public_source, does_replies=:does_replies, reply_rules=:reply_rules, last_updated=now(), last_error_code=NULL WHERE token=:token');
 
 	  	$stmt->execute(array('frequency' => $_POST['frequency'], 'tracery' => $_POST['tracery'],'public_source' => $_POST['public_source'],'does_replies' => $_POST['does_replies'],'reply_rules' => $_POST['reply_rules'], 'token' => $_SESSION['oauth_token']));
 

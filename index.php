@@ -175,6 +175,42 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
         <br><br>
     <form id="tracery-form">
 
+<?php 
+if  (!is_null($result['last_error_code'])) {
+
+$error_msg = "Unknown error :" . $result['last_error_code'];
+
+switch($result['last_error_code']) {
+  case 64:
+    $error_msg = "Account suspended";
+  break;
+  case 89:
+    $error_msg = "CBDQ token is invalid: please reauthenticate";
+  break;
+  case 170:
+    $error_msg = "Twitter error: sent empty status";
+  break;
+  case 186:
+    $error_msg = "Twitter error: status is too long";
+  break;
+  case 187:
+    $error_msg = "Twitter error: status is a duplicate";
+  break;
+  case 324:
+    $error_msg = "Twitter error: couldn't attach image or video";
+  break;
+  case 326:
+    $error_msg = "Account temporarily locked - please log in to Twitter and resolve";
+  break;
+}
+
+
+  echo('<div id="last-error" class="alert alert-danger hidden" role="alert">'.$result['last_error_code'].'</div>');
+}
+?>
+
+    
+
     <div class="form-group">
         <label for="tracery">Tracery JSON</label><br>
         <textarea class="form-control expanding" rows="25" id="tracery" name="tracery">
@@ -196,6 +232,9 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
 </textarea>
     </div>
+
+
+
 <div id="tracery-validator" class="alert alert-danger hidden" role="alert">Parsing error</div>
 
     <div class="row">
