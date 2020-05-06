@@ -205,7 +205,7 @@ switch($result['last_error_code']) {
 }
 
 
-  echo('<div id="last-error" class="alert alert-danger hidden" role="alert">'.$result['last_error_code'].'</div>');
+  echo('<div id="last-error" class="alert alert-danger" role="alert">'.$error_msg.'</div>');
 }
 ?>
 
