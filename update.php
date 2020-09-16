@@ -28,6 +28,10 @@ if (isset($_SESSION['oauth_token']))
 {
 	try
 	{
+		if (!isset($_POST['frequency'], $_POST['tracery'], $_POST['public_source'], $_POST['does_replies'], $_POST['reply_rules'])) 
+		{
+			die ("{\"success\": false, \"reason\" : \"update failed: incomplete data\"}");
+		}
 		//todo validate json here
 
 		$stmt = $pdo->prepare('UPDATE traceries SET frequency=:frequency, tracery=:tracery, public_source=:public_source, does_replies=:does_replies, reply_rules=:reply_rules, last_updated=now(), last_error_code=NULL WHERE token=:token');
