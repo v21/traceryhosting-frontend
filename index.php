@@ -200,7 +200,7 @@ switch($result['last_error_code']) {
     $error_msg = "Twitter error: couldn't attach image or video";
   break;
   case 326:
-    $error_msg = "Account temporarily locked - please log in to Twitter and resolve";
+    $error_msg = "Twitter temporarily locked your account. Cheap Bots, Done Quick! has stopped attempting to post — press SAVE to re-enable.";
   break;
 }
 
@@ -380,6 +380,11 @@ switch($result['last_error_code']) {
         <script src="js/jsonlint.js"></script>
         <script src="js/main.js"></script>
         <script type="text/javascript">var screen_name = "<?php echo($result['screen_name'])?>"</script>
+<?php
+if  (!is_null($result['last_error_code']) && $result['last_error_code'] == 326) {
+  echo('<script type="text/javascript">window.onload = function() {unsaved = true;changeSaveButtonColour();};</script>');
+}
+?>
     </body>
 </html>
 
