@@ -67,7 +67,7 @@ if (!isset($_SESSION['user_id']))
       </p>
 
 		  <p>To use it, <a href="https://twitter.com/signup">create a Twitter account</a> for your bot to run under and then sign in below. 
-		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="https://v21.io">George Buckenham</a> - they can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>. You can support this site on <a href="https://www.patreon.com/v21">Patreon</a>.</p>
+		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="https://v21.io">v buckenham</a> - they can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>. You can support this site on <a href="https://www.patreon.com/v21">Patreon</a>.</p>
 		  </p>
 
 		  </div>
