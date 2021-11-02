@@ -65,7 +65,7 @@ if (!(isset($access_token["oauth_token"])) || !(isset($access_token["oauth_token
 
 
 
-  $stmt = $pdo->prepare('INSERT INTO traceries (token,token_secret, screen_name, user_id) VALUES(:token, :token_secret, :screen_name, :user_id) ON DUPLICATE KEY UPDATE token=:token2, token_secret=:token_secret2, screen_name=:screen_name2, user_id=:user_id2');
+  $stmt = $pdo->prepare('INSERT INTO traceries (token,token_secret, screen_name, user_id, last_ip) VALUES(:token, :token_secret, :screen_name, :user_id, :last_ip) ON DUPLICATE KEY UPDATE token=:token2, token_secret=:token_secret2, screen_name=:screen_name2, user_id=:user_id2, last_ip=:last_ip2');
 
   $stmt->execute(array('token' => $access_token["oauth_token"], 
                        'token_secret' => $access_token["oauth_token_secret"], 
@@ -74,7 +74,9 @@ if (!(isset($access_token["oauth_token"])) || !(isset($access_token["oauth_token
                        'token_secret2' => $access_token["oauth_token_secret"], 
                        'screen_name2' => $access_token["screen_name"],
                        'user_id' => $access_token["user_id"],
-                       'user_id2' => $access_token["user_id"]
+                       'user_id2' => $access_token["user_id"],
+                       'last_ip' => $_SERVER['REMOTE_ADDR'],
+                       'last_ip2' => $_SERVER['REMOTE_ADDR']
                       ));
 
 
