@@ -1,7 +1,6 @@
 <?php
 
-
-require "twitteroauth/autoload.php";
+require "vendor/autoload.php";
 require "credentials.php";
 
 use Abraham\TwitterOAuth\TwitterOAuth;
@@ -226,7 +225,7 @@ switch($result['last_error_code']) {
         }
         else
         {
-        	echo(htmlspecialchars($result['tracery'], 'ENT_HTML5' | ENT_QUOTES , "UTF-8")); /*todo : XSS vuln? */
+        	echo(htmlspecialchars($result['tracery'], ENT_HTML5 | ENT_QUOTES , "UTF-8")); /*todo : XSS vuln? */
         }
 ?>
 
@@ -313,7 +312,7 @@ switch($result['last_error_code']) {
         }
         else
         {
-          echo(htmlspecialchars($result['reply_rules'], 'ENT_HTML5' | ENT_QUOTES , "UTF-8")); 
+          echo(htmlspecialchars($result['reply_rules'], ENT_HTML5 | ENT_QUOTES , "UTF-8")); 
         }
 ?>
 

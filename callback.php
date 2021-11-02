@@ -1,6 +1,7 @@
 <?php
 
-require "twitteroauth/autoload.php";
+
+require "vendor/autoload.php";
 require "credentials.php";
 
 use Abraham\TwitterOAuth\TwitterOAuth;

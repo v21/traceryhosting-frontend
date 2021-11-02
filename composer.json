@@ -1,0 +1,7 @@
+{
+    "name": "v21/traceryhosting-frontend",
+    "type": "project",
+    "require": {
+        "abraham/twitteroauth": "^3.1"
+    }
+}
