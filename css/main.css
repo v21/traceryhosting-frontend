@@ -104,8 +104,7 @@ sourcetext
 
 table.admintable>thead>tr>th, .table.admintable>thead>tr>th, table.admintable>tbody>tr>th, .table.admintable>tbody>tr>th, table.admintable>tfoot>tr>th, .table>tfoot>tr>th, table>thead>tr>td, .table>thead>tr>td, table>tbody>tr>td, .table>tbody>tr>td, table>tfoot>tr>td, .table>tfoot>tr>td
 {
-  border: 1px black solid;
-  border-color: black;
+  border: 1px lightgrey solid;
   border-collapse: separate;
   padding: 3px;
 }
