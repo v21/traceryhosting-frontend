@@ -218,7 +218,7 @@ function stringToColor($str) {
   $hue = hexdec(substr($hash, 0, 6))/hexdec("ffffff");
   $sat = hexdec(substr($hash, 6, 6))/hexdec("ffffff");
   $val = hexdec(substr($hash, 12, 6))/hexdec("ffffff");
-  return hslToHex($hue * 360, 40 + $sat * 30, 60 + $val * 30);
+  return hslToHex($hue * 360, 40 + $sat * 30, 10 + $val * 30);
 }
 
 
@@ -361,7 +361,7 @@ if (!$include_inactive)
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\" target=\"_blank\">{$value['screen_name']}</a></td>
       <td><a href=\"https://twitter.com/{$value['screen_name']}\" target=\"_blank\">{$value['user_id']}</a></td>
-      <td style=\"background-color:". stringToColor($value['last_ip']) ."\">{$value['last_ip']}</td>
+      <td style=\"color:". stringToColor($value['last_ip']) ."\">{$value['last_ip']}</td>
       <td>{$value['created_on']}</td>
       <td>{$value['last_updated']}</td>
       <td>{$value['tracery_size']}</td>
