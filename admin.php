@@ -58,8 +58,12 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 if ($include_inactive)
 {
   $stmt = $pdo->prepare('SELECT 
+  last_error_code,
   screen_name, 
   user_id,
+  last_ip,
+  round((length(tracery )-length(replace(tracery ,"#","")))/length("#")) as "hash",
+  round((length(tracery )-length(replace(tracery ,"http","")))/length("http")) as "http",
   frequency, 
   last_updated,
   created_on,
@@ -69,13 +73,16 @@ if ($include_inactive)
   CHAR_LENGTH(tracery) as "tracery_size", 
   tracery LIKE "%{svg %" as "svg"
   FROM traceries
+  WHERE created_on  > DATE_ADD(NOW(), INTERVAL -30 DAY)
   ORDER BY last_updated DESC');
 }
 else
 {
   $stmt = $pdo->prepare('SELECT 
+  last_error_code,
   screen_name, 
   user_id,
+  last_ip,
   frequency, 
   last_updated,
   created_on,
@@ -86,6 +93,7 @@ else
   tracery LIKE "%{svg %" as "svg"
   FROM traceries
   WHERE frequency > 0
+  AND created_on  > DATE_ADD(NOW(), INTERVAL -30 DAY)
   ORDER BY last_updated DESC');
 }
 
@@ -108,21 +116,50 @@ if (!$include_inactive)
 }
 ?>
 <table class="admintable sortable">
-  <tr><th>freq</th> <th>screen_name</th> <th class="sorttable_numeric">user_id</th> <th>created</th> <th>updated</th> <th>tracery size</th> <th>svg</th> <th>blocked</th> <th>public</th> <th>replies</th></tr>
+  <tr>
+    <th>block</th>
+    <th>blocked</th>
+    <th>last error</th>
+    <th>freq</th>
+    <th>screen_name</th>
+    <th class="sorttable_numeric">user_id</th>
+    <th>last_ip</th>
+    <th>created</th>
+    <th>updated</th>
+    <th>tracery size</th>
+    <th># count</th>
+    <th>http count</th>
+    <th>svg</th>
+    <th>public</th>
+    <th>replies</th>
+  </tr>
+
+  <form action="/my-handling-form-page" method="post">
+
 <?php
   foreach ($results as $key => $value) {
     $public_source = $value['public_source'] == 0 ? "no" : "<a href=\"/source/{$value['screen_name']}\" target=\"_blank\">yes</a>";
     $does_replies = $value['does_replies'] == 0 ? "no" : "yes";
     $svg = $value['svg'] == 0 ? "no" : "yes";
+    $blocked_toggled = $value['blocked_status'] === 1 ? "0" : "1";
+    $block_label = $value['blocked_status'] === 1 ? "Unblock" : "Block";
+    $block_class = $value['blocked_status'] === 1 ? "btn-primary" : "btn-warning";
     echo("<tr>
+      <td>
+        <button type=\"button\" class=\"block_user btn btn-default {$block_class}\" name=\"{$value['user_id']}\" value=\"{$blocked_toggled}\">{$block_label}</button>
+      </td>
+      <td>{$value['blocked_status']}</td>
+      <td>{$value['last_error_code']}</td>
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\" target=\"_blank\">{$value['screen_name']}</a></td>
       <td><a href=\"https://twitter.com/{$value['screen_name']}\" target=\"_blank\">{$value['user_id']}</a></td>
+      <td>{$value['last_ip']}</td>
       <td>{$value['created_on']}</td>
       <td>{$value['last_updated']}</td>
       <td>{$value['tracery_size']}</td>
+      <td>{$value['hash']}</td>
+      <td>{$value['http']}</td>
       <td>{$svg}</td>
-      <td>{$value['blocked_status']}</td>
       <td>{$public_source}</td>
       <td>{$does_replies}</td>
       </tr>");
@@ -130,6 +167,9 @@ if (!$include_inactive)
 ?>
 
 
+<button type="submit">Update</button>
+
+</form>
 
 </table>
 </div>
@@ -153,7 +193,42 @@ if (!$include_inactive)
         <script src="/js/jsonlint.js"></script>
         <script src="/js/main.js"></script>
         <script src="/js/admin/sorttable.js"></script>
-        <script type="text/javascript">var screen_name = "<?php echo($result['screen_name'])?>"</script>
+        <script>
+        $('.block_user').click(function() {
+          let btn = $(this);
+          $.ajax({
+            url: "admin_updateblock.php",
+            method : "POST",
+            data : {"user_id": btn.prop('name'), "blocked_status":  btn.val() },
+            dataType: "json"	  
+          })
+            .done(function( data ) {
+            if (data.hasOwnProperty('success') && data['success'])
+            {
+              if (btn.val() === '1') { //was unblocked, now blocked
+                btn.val(0);
+                btn.addClass("btn-primary");
+                btn.removeClass("btn-warning");
+                btn.text("Unblock");
+              } 
+              else {
+                btn.val(1);
+                btn.addClass("btn-warning");
+                btn.removeClass("btn-primary");
+                btn.text("Block");
+              }
+
+            }
+            else {
+              alert(" update block failed: " + (data.hasOwnProperty('reason') && data['reason']));
+            }
+            })
+            .fail( function( jqXHR, textStatus ) {
+              alert(" update block failed: " + textStatus);
+            });
+        });
+
+        </script>
     </body>
 </html>
 
