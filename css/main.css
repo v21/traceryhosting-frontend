@@ -110,6 +110,6 @@ table.admintable>thead>tr>th, .table.admintable>thead>tr>th, table.admintable>tb
 }
 
 .btn-xsm, .btn-group-xsm>.btn {
-  padding: 0px 0px 0px;
+  padding: 0px 4px;
 }
 
