@@ -215,8 +215,10 @@ function hslToHex($h, $s, $l, $prependPound = true) {
 
 function stringToColor($str) {
   $hash = md5($str);
-  $hue = hexdec(substr($hash, 0, 3))/hexdec("fff");
-  return hslToHex($hue * 360, 60, 80);
+  $hue = hexdec(substr($hash, 0, 6))/hexdec("ffffff");
+  $sat = hexdec(substr($hash, 6, 6))/hexdec("ffffff");
+  $val = hexdec(substr($hash, 12, 6))/hexdec("ffffff");
+  return hslToHex($hue * 360, 40 + $sat * 30, 60 + $val * 30);
 }
 
 
