@@ -357,7 +357,7 @@ if (!$include_inactive)
         <button type=\"button\" class=\"block_user btn btn-sm btn-default {$block_class}\" name=\"{$value['user_id']}\" value=\"{$blocked_toggled}\">{$block_label}</button>
       </td>
       <td>{$value['blocked_status']}</td>
-      <td>{$value['last_error_code']}</td>
+      <td style=\"color:". stringToColor($value['last_error_code']) ."\">{$value['last_error_code']}</td>
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\" target=\"_blank\">{$value['screen_name']}</a></td>
       <td><a href=\"https://twitter.com/{$value['screen_name']}\" target=\"_blank\">{$value['user_id']}</a></td>
