@@ -356,7 +356,7 @@ if (!$include_inactive)
     $block_class = $value['blocked_status'] === 1 ? "btn-primary" : "btn-warning";
     echo("<tr>
       <td>
-        <button type=\"button\" class=\"block_user btn btn-sm btn-default {$block_class}\" name=\"{$value['user_id']}\" value=\"{$blocked_toggled}\">{$block_label}</button>
+        <button type=\"button\" class=\"block_user btn btn-xsm btn-default {$block_class}\" name=\"{$value['user_id']}\" value=\"{$blocked_toggled}\">{$block_label}</button>
       </td>
       <td>{$value['blocked_status']}</td>
       <td style=\"color:". stringToColor($value['last_error_code']) ."\">{$value['last_error_code']}</td>
