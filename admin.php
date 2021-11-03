@@ -108,7 +108,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
 
 
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-10 col-md-offset-1">
   <?php
 if (!$include_inactive)
 {
@@ -119,22 +119,21 @@ if (!$include_inactive)
   <tr>
     <th>block</th>
     <th>blocked</th>
-    <th>last error</th>
+    <th>last err</th>
     <th>freq</th>
     <th>screen_name</th>
     <th class="sorttable_numeric">user_id</th>
     <th>last_ip</th>
     <th>created</th>
     <th>updated</th>
-    <th>tracery size</th>
-    <th># count</th>
-    <th>http count</th>
+    <th>size</th>
+    <th>#</th>
+    <th>http</th>
     <th>svg</th>
     <th>public</th>
     <th>replies</th>
   </tr>
 
-  <form action="/my-handling-form-page" method="post">
 
 <?php
   foreach ($results as $key => $value) {
@@ -167,9 +166,6 @@ if (!$include_inactive)
 ?>
 
 
-<button type="submit">Update</button>
-
-</form>
 
 </table>
 </div>
