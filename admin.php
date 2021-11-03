@@ -292,6 +292,8 @@ else
   screen_name, 
   user_id,
   last_ip,
+  round((length(tracery )-length(replace(tracery ,"#","")))/length("#")) as "hash",
+  round((length(tracery )-length(replace(tracery ,"http","")))/length("http")) as "http",
   frequency, 
   last_updated,
   created_on,
