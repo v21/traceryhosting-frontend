@@ -362,7 +362,7 @@ if (!$include_inactive)
       <td style=\"color:". stringToColor($value['last_error_code']) ."\">{$value['last_error_code']}</td>
       <td>{$value['frequency']}</td>
       <td><a href=\"admin_single.php?screen_name={$value['screen_name']}\" target=\"_blank\">{$value['screen_name']}</a></td>
-      <td><a href=\"https://twitter.com/{$value['screen_name']}\" target=\"_blank\">{$value['user_id']}</a></td>
+      <td><img src=\"https://unavatar.io/twitter/{$value['screen_name']}\" width=\"25\" height=\"25\"><a href=\"https://twitter.com/{$value['screen_name']}\" target=\"_blank\">{$value['user_id']}</a></td>
       <td style=\"color:". stringToColor($value['last_ip']) ."\">{$value['last_ip']}</td>
       <td>{$value['created_on']}</td>
       <td>{$value['last_updated']}</td>
