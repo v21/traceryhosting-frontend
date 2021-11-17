@@ -11,3 +11,6 @@ How to get set up developing on CBDQ:
 - you can spin up a dev server with the builtin php server like so: `php -S localhost:8000`
 
 - now go check out `https://github.com/v21/traceryhosting-backend`!
+
+
+To update TwitterOAuth, run `php composer.phar update`
