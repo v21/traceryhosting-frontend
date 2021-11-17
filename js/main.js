@@ -261,6 +261,14 @@ var generate_reply = function()
 					$('#reply-media').append("<div class=\"svg-media\"> <img src=\"" + url + "\"></div>");
 
 				}
+				else if (media.indexOf("vid ") === 1)
+				{
+
+					var url = media.substr(5,media.length - 6);
+
+					$('#reply-media').append("<div class=\"svg-media\"> <video controls src=\"" + url + "\"></div>");
+
+				}
 				else
 				{
 					$('#replyrules-validator').removeClass('hidden').text("Unknown media type " + media.substr(1,4));
@@ -339,6 +347,13 @@ var generate = function()
 					var url = media.substr(5,media.length - 6);
 
 					$('#tweet-media').append("<div class=\"svg-media\"> <img src=\"" + url + "\"></div>");
+				}
+				else if (media.indexOf("vid ") === 1)
+				{
+					var url = media.substr(5,media.length - 6);
+
+					$('#tweet-media').append("<div class=\"svg-media\"> <video controls src=\"" + url + "\"></div>");
+
 				}
 				else
 				{
