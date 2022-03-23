@@ -83,7 +83,7 @@ else {
       <div class="col-md-6 col-md-offset-3">
           <p>This is the <a href="https://github.com/galaxykate/tracery">Tracery</a> source for the bot running at <?php echo('<a href="https://twitter.com/' . $result['screen_name']. '">') ?>@<?php echo($result['screen_name']) ?></a>. It currently tweets 
           <?php 
-          $frequencypossibilities = array(-1 => "never", 10 => "every 10 minutes", 30 => "every half hour", 60 => "every hour", 180 => "every 3 hours", 360 => "every 6 hours", 720 => "twice a day", 1440 => "once a day", 10080 => "once a week", 43829 => "once a month", 525949 => "once a year", 42 => "when run manually");
+          $frequencypossibilities = array(-1 => "never", 10 => "every 10 minutes", 30 => "every half hour", 60 => "every hour",  120 => "Every 2 hours", 180 => "every 3 hours", 360 => "every 6 hours", 720 => "twice a day", 1440 => "once a day", 10080 => "once a week", 43829 => "once a month", 525949 => "once a year", 42 => "when run manually");
           echo($frequencypossibilities[$result['frequency']]);
         ?><?php echo($result['does_replies'] === "1"? " and replies to mentions":"")?>.</p>
         <p>You can make your own bot, if you like. It's free and requires no specialized knowledge. To start, sign in with twitter <a href="/">here</a>.
