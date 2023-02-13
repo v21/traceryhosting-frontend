@@ -68,6 +68,15 @@ if (!isset($_SESSION['user_id']))
 		  <p>To use it, <a href="https://twitter.com/signup">create a Twitter account</a> for your bot to run under and then sign in below. 
 		  The bots are written in <a href="http://www.brightspiral.com">Tracery</a>, a tool for writing generative grammars developed by <a href="http://www.galaxykate.com/">Kate Compton</a>. This site is run by <a href="https://v21.io">v buckenham</a> - they can be contacted at <a href="mailto:vtwentyone@gmail.com">vtwentyone@gmail.com</a>. You can support this site on <a href="https://www.patreon.com/v21">Patreon</a>.</p>
 		  </p>
+<br>
+      <p>
+        <b>Update (13th Feb 2023)</b>: Twitter is <a href="https://twitter.com/TwitterDev/status/1623467618400374784">restricting API access</a>, which means:
+        <ul>
+          <li>Bots that posted every 10 minutes now post every 30 minutes</li>
+          <li>Reply functionality has been disabled</li>
+      </ul>
+      If you are interested in moving your bot to Mastodon, @boodooperson has set up <a href="https://cheapbotstootsweet.com">Cheap Bots, Toot Sweet!</a>, which operates using the same syntax.
+      </p>
 
 		  </div>
 		</div>
@@ -175,7 +184,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
     <form id="tracery-form">
 
 <?php 
-if  (!is_null($result['last_error_code'])) {
+if  (!is_null($result['last_error_code']) && $result['last_error_code'] != 187) { //don't show duplicate error
 
 $error_msg = "Unknown error :" . $result['last_error_code'];
 
@@ -193,7 +202,7 @@ switch($result['last_error_code']) {
     $error_msg = "Twitter error: status is too long";
   break;
   case 187:
-    $error_msg = "Twitter error: status is a duplicate";
+    $error_msg = "Twitter error: status is a duplicate, trying again";
   break;
   case 324:
     $error_msg = "Twitter error: couldn't attach image or video";
@@ -254,7 +263,7 @@ switch($result['last_error_code']) {
         
 	    <select class="form-control" id="frequency" name="frequency">
 	    	<?php 
-	    		$frequencypossibilities = array(-1 => "Never", 10 => "Every 10 minutes", 30 => "Every half hour", 60 => "Every hour", 120 => "Every 2 hours", 180 => "Every 3 hours", 360 => "Every 6 hours", 720 => "Twice a day", 1440 => "Once a day", 10080 => "Once a week", 43829 => "Once a month", 525949 => "Once a year");
+	    		$frequencypossibilities = array(-1 => "Never", 10 => "Every half hour (was every 10 minutes)", 30 => "Every half hour", 60 => "Every hour", 120 => "Every 2 hours", 180 => "Every 3 hours", 360 => "Every 6 hours", 720 => "Twice a day", 1440 => "Once a day", 10080 => "Once a week", 43829 => "Once a month", 525949 => "Once a year");
 	    		foreach ($frequencypossibilities as $freqvalue => $freqlabel) {
 	    			echo('<option value="' . $freqvalue . '" '. ($result['frequency'] == $freqvalue ? 'selected' : '') .'>' . $freqlabel . '</option>');
 	    		}
@@ -271,18 +280,18 @@ switch($result['last_error_code']) {
     <br>
 
     <div class="form-group">
+    Replies have been disabled, in accordance with <a href="https://twitter.com/TwitterDev/status/1623467618400374784">Twitter's API changes</a>. However, if you have previously set replies, you can still view them:
+          
           <select class="form-control" id="does_replies" name="does_replies">
           <?php 
-            $replypossibilities = array(1 => "Reply", 0 => "Don't reply");
+            $replypossibilities = array(1 => "Show", 0 => "Hide");
 
             foreach ($replypossibilities as $replyvalue => $replylabel) {
               echo('<option value="' . $replyvalue . '" '. ($result['does_replies'] == $replyvalue ? 'selected' : '') .'>' . $replylabel . '</option>');
             }
-          ?> 
-          </select> to tweets sent to <?php echo('<a class="username" href="https://twitter.com/' . $result['screen_name']. '">') ?>
-          <?php echo('<img src="' . $_SESSION['profile_pic'] . '" width=32> '); ?>
-          <span class="username-text"><?php echo($result['screen_name']) ?></span>
-          </a>.
+          ?>
+          </select>
+          </a>
 
         </div>
 
@@ -291,6 +300,7 @@ switch($result['last_error_code']) {
     <div id="reply_rules_container" name = "reply_rules_container" class="form-group <?php echo(($result['does_replies'] ? "": "hidden")) ?>">
 <div class="row">
       <div class="col-md-7 col-md-offset-3">
+        <p style="color:#c7254e"> Reply functionality has been disabled! This section is only for use retriving any rules you might have put here.</p>
       <br>
           <p>This is also in <a href="https://www.tutorialspoint.com/json/json_syntax.htm">JSON</a> format. When a mention is received, it's checked against the keys (the left hand part) for a match. The keys are specified with <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions">RegExp syntax</a> - this also straightforwardly matches any letters (as long as there's no punctuation). If you want to catch all replies, use <code>"."</code>. The value (the right hand part) is used as the Tracery syntax for the reply - this can be plain text or a symbol such as <code>"#origin#"</code>. Mentions are checked every 5 minutes, and have a 5% chance of being ignored (to prevent bots from responding to each other forever).</p> 
       </div>
@@ -300,7 +310,7 @@ switch($result['last_error_code']) {
     <div class="col-md-11 col-md-offset-1">
 
     <div class="form-group">
-        <textarea class="form-control" rows="7" id="reply_rules" name="reply_rules">
+        <textarea class="form-control" rows="7" id="reply_rules" name="reply_rules" disabled>
 <?php 
         if (is_null($result['reply_rules']))
         {
@@ -319,7 +329,7 @@ switch($result['last_error_code']) {
 
 </textarea>
 </div>
-    <div id="replyrules-validator" class="alert alert-danger hidden" role="alert">Parsing error</div>
+    <!-- <div id="replyrules-validator" class="alert alert-danger hidden" role="alert">Parsing error</div>
       Test mention: <textarea class="form-control" rows="1" id="test_mention" name="test_mention">@<?php echo($result['screen_name']) ?> </textarea>
       <div class="pull-right pad-left"><br>
     <button type="button" id="refresh-generated-reply" class="btn btn-default"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -327,7 +337,7 @@ switch($result['last_error_code']) {
       Response:<div id="generated-reply" style="overflow: auto;" class="well well-sm">-----
         <div id="reply-media"> 
         </div>
-      </div>
+      </div> -->
       
    </div>
   </div>
