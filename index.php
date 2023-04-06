@@ -70,23 +70,23 @@ if (!isset($_SESSION['user_id']))
 		  </p>
 <br>
       <p>
-        <b>Update (13th Feb 2023)</b>: Twitter is <a href="https://twitter.com/TwitterDev/status/1623467618400374784">restricting API access</a>, which means:
-        <ul>
-          <li>Bots that posted every 10 minutes now post every 30 minutes</li>
-          <li>Reply functionality has been disabled</li>
-      </ul>
+        <b>Update (6th April 2023)</b>: CBDQ has closed down! Twitter <a href="https://twitter.com/TwitterDev/status/1641222786894135296">has ended all large-scale API usage</a>, and this means that CBDQ is unable to operate. Please <a href="mailto:vtwentyone+cbdq@gmail.com">get in touch</a> if you would like access to the source of your bot.
+      </p>
+      <p>
       If you are interested in moving your bot to Mastodon, @boodooperson has set up <a href="https://cheapbotstootsweet.com">Cheap Bots, Toot Sweet!</a>, which operates using the same syntax.
       </p>
-
+      <p>
+        And finally... if you made a Twitterbot with Cheap Bots, Done Quick!... thank you! The site would've been nothing without you.
+      </p>
 		  </div>
 		</div>
 		
         <br><br>
-		<div class="row">
+		<!-- <div class="row">
 		  <div class="center-block">
 			<a href="signin.php"><img src="img/sign-in-with-twitter-gray.png" class="center-block"></a>
 		  </div>
-		</div>
+		</div> -->
 
         <br><br>
         <div class="row">
