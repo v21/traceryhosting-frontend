@@ -76,6 +76,9 @@ if (!isset($_SESSION['user_id']))
       If you are interested in moving your bot to Mastodon, @boodooperson has set up <a href="https://cheapbotstootsweet.com">Cheap Bots, Toot Sweet!</a>, which operates using the same syntax.
       </p>
       <p>
+        I am currently at work on a spritual sequel to CBDQ called <a href="https://downpour.games/">Downpour</a>, where you can collage images together to make videogames. It's aiming to be just as fun and accessible as CBDQ. <a href="https://downpour.games/">You can sign up to be notified once it releases.</a>
+      </p>
+      <p>
         And finally... if you made a Twitterbot with Cheap Bots, Done Quick!... thank you! The site would've been nothing without you.
       </p>
 		  </div>
