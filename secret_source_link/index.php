@@ -48,9 +48,11 @@ require "../credentials.php";
   $routes = explode('/', $base_url);
 
   $screen_name = $routes[1];
+  $key = $routes[2];
 
+$required_key = hash('sha256', $screen_name . "+" . SOURCE_HASH_SECRET);
 
-$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD);
+  $pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD);
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -74,14 +76,14 @@ if ($screen_name === "")
     </div>
     <?php
 }
-elseif ($result['public_source'] != true)
+elseif ($required_key != $key)
 {
   ?>
   <h1 class="header text-center cursive">Cheap Bots, Done Quick!</h1>
         <br>
         <div class="row">
       <div class="col-md-6 col-md-offset-3">
-      <p>Could not find Tracery source for <b><?php echo($screen_name) ?></b> - that Twitter account may not exist, may not use CBDQ, or may not have chosen to share their source.</p>
+      <p>Could not find Tracery source for <b><?php echo($screen_name) ?></b> - if this is your account, please check the link again, or contact v21</p>
       </div>
     </div>
     <?php
@@ -97,12 +99,11 @@ else
         <br>
         <div class="row">
       <div class="col-md-6 col-md-offset-3">
-          <p>This is the <a href="https://github.com/galaxykate/tracery">Tracery</a> source for the bot running at <?php echo('<a href="https://twitter.com/' . $result['screen_name']. '">') ?>@<?php echo($result['screen_name']) ?></a>. It currently tweets 
+          <p>This is the <a href="https://github.com/galaxykate/tracery">Tracery</a> source for the bot that was running at <?php echo('<a href="https://twitter.com/' . $result['screen_name']. '">') ?>@<?php echo($result['screen_name']) ?></a>. It tweeted
           <?php 
           $frequencypossibilities = array(-1 => "never", 10 => "every 10 minutes", 30 => "every half hour", 60 => "every hour", 120 => "every 3 hours", 180 => "every 3 hours", 360 => "every 6 hours", 720 => "twice a day", 1440 => "once a day", 10080 => "once a week", 43829 => "once a month", 525949 => "once a year", 42 => "when run manually");
           echo($frequencypossibilities[$result['frequency']]);
         ?><?php echo($result['does_replies'] === "1"? " and replies to mentions":"")?>.</p>
-        <p>You can make your own bot, if you like. It's free and requires no specialized knowledge. To start, sign in with twitter <a href="/">here</a>.
       </div>
     </div>
     
@@ -150,12 +151,13 @@ else
 if ($result['does_replies'] === 1) 
 {
   ?>
+  Replies Tracery:
     <div id="reply_rules_container" name = "reply_rules_container" class="form-group <?php echo(($result['does_replies'] ? "": "hidden")) ?>">
         
         <textarea class="form-control expanding" rows="7" id="reply_rules" name="reply_rules">
 <?php 
         
-          echo(htmlspecialchars($result['reply_rules'], ENT_HTML5 | ENT_QUOTES , "UTF-8")); 
+          echo(htmlentities($result['reply_rules'], ENT_HTML5 | ENT_QUOTES , "UTF-8")); 
         
 ?>
 
