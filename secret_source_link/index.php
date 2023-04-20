@@ -58,12 +58,6 @@ $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-//we've got an account
-$stmt = $pdo->prepare('SELECT * FROM traceries WHERE screen_name = :screen_name');
-
-$stmt->execute(array('screen_name' => $screen_name));
-$result = $stmt->fetch(PDO::FETCH_ASSOC); 
-
 if ($screen_name === "")
 {
   ?>
@@ -90,6 +84,13 @@ elseif ($required_key != $key)
 }
 else
 {
+
+//we've got an account
+$stmt = $pdo->prepare('SELECT * FROM traceries WHERE screen_name = :screen_name ORDER BY user_id DESC LIMIT 1');
+
+$stmt->execute(array('screen_name' => $screen_name));
+$result = $stmt->fetch(PDO::FETCH_ASSOC); 
+
 
 ?>
 
