@@ -11,9 +11,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 
 
 
-$pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD, array(
-    PDO::MYSQL_ATTR_FOUND_ROWS => true
-));
+$pdo = new PDO('sqlite:' . SQLITE_DB);
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

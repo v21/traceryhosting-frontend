@@ -52,7 +52,7 @@ require "../credentials.php";
 
 $required_key = hash('sha256', $screen_name . "+" . SOURCE_HASH_SECRET);
 
-  $pdo = new PDO('mysql:dbname=traceryhosting;host=127.0.0.1;charset=utf8mb4', 'tracery_php', DB_PASSWORD);
+$pdo = new PDO('sqlite:' . SQLITE_DB);
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
